@@ -152,9 +152,9 @@ void main_uart(wiced_thread_arg_t arg){
                     SEND_OTA(rx_buffer3);
 
                     save_data(rx_buffer3, &data_adq, identify_device(rx_buffer3));
-                    printf("heart rate %d\n",data_adq.h_rate);
-                    printf("Uart: %s\n",define_variable( &data_adq, 2));
-                    data_adq.h_rate=20;
+//                    printf("heart rate %d\n",data_adq.h_rate);
+//                    printf("Uart: %s\n",define_variable( &data_adq, 2));
+//                    data_adq.h_rate=20;
 
                     memset(&rx_buffer3,'\0',128);
                     memset(&rx_buffer,'\0',100);

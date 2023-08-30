@@ -126,7 +126,6 @@ static wiced_result_t guardian_V2( void ){
 
     check_sound();
 
-//    printf("gateway: %d\n",data_adq.h_rate);
 
     WPRINT_APP_INFO( ("its worked timed event\n") );
     if((count_l>=1)&&(first_seen_lm==WICED_FALSE)){

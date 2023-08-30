@@ -18,7 +18,7 @@
 #define FILTER_HR           "HR"
 
 
- struct data_status
+struct data_status
 {
     unsigned char mac[18];
     float   h_temperature;
@@ -77,8 +77,8 @@ void save_data( char* data, struct  data_status* data_struct, int type_data )
 
             case HEART_RATE:
 
-//                data_struct->h_rate =  atoi(&data[7]);
-                data_struct->h_rate = 8;
+                data_struct->h_rate =  atoi(&data[7]);
+//                data_struct->h_rate = 8;
 
             break;
 

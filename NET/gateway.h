@@ -22,7 +22,7 @@
 #include "stdlib.h"
 
 
-#include "BIOMETRICS/biometric.h"
+//#include "BIOMETRICS/biometric.h"
 
 #include "manager_net.h"
 #include "TXT/manager_menssage_vh.h"
@@ -340,17 +340,17 @@ void publishThread(wiced_thread_arg_t arg)
 
 //        wiced_gpio_output_low(Sat_WiFi);
 //        printf("gateway: %s\n",define_variable( &data_adq, 2));
-        printf("gateway: %d\n",data_adq.h_rate);
+//        printf("gateway: %d\n",data_adq.h_rate);
 
-        memcpy(data_adq.mac,mac_wifi,sizeof(mac_wifi));
+        memcpy(data_adq.mac,mac_wifi,strlen(mac_wifi));
 
-//        sprintf(data_out,"\n%s\r\n\n%s\r\n",define_variable( &data_adq, 2),define_variable( &data_adq, 2));
-//        result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//           if(result==WICED_TCPIP_SUCCESS){
-//               wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-//               send_data_task=WICED_TRUE;
-//
-//            }
+        sprintf(data_out,"\n%s\r\n\n%s\r\n",define_variable( &data_adq, 1),define_variable( &data_adq, 2));
+        result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+           if(result==WICED_TCPIP_SUCCESS){
+               wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+               send_data_task=WICED_TRUE;
+
+            }
 
         wiced_tcp_stream_flush(&stream);
 
