@@ -21,10 +21,14 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+
+#include "BIOMETRICS/biometric.h"
+
 #include "manager_net.h"
 #include "TXT/manager_menssage_vh.h"
 #include "UART/main_uart.h"
 #include "GPIO/manager_gpio_vh.h"
+
 
 int status_config=0;
 
@@ -261,81 +265,92 @@ void publishThread(wiced_thread_arg_t arg)
         wiced_tcp_stream_init(&stream, &socket);
 
         // Send the data via the stream
-        if((s_count_x<=limit_data)){
-            WPRINT_APP_INFO(("Multiple Tcp client\n"));
-            if(s_count_x==limit_data){
-                data_send_bt=limit_data;
-//                count_bt=0;
-            }
-            else if(s_count_x<limit_data){
-                data_send_bt=s_count_x;
-//                count_bt=0;
-            }
-            if(s_count_x!=0){
-
-//                blink_vehicle();
-
-//                wiced_gpio_output_high(Sat_WiFi);
-//                wiced_gpio_output_high(Sat_WiFi);
-
-                WPRINT_APP_INFO( (">> es igual a %d en %s\n\n\n",s_count_x,mac_ap) );
-
-                for(int f=0;f<data_send_bt;f++){
-                    if(f==0){
-//                    sprintf(data_out,"\nV;%s,%s,%s\r\n",mac_wifi,mac_ap,ip);
-                        sprintf(data_out,"\nU;%s,1600,%d%d%d%d0000000000000,%s,%s\r\n",mac_wifi,t1,t2,t3,t4,mac_ap,ip);
-                        result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-                        if(result==WICED_TCPIP_SUCCESS){
-                            wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-                            send_data_task=WICED_TRUE;
-                        }
-                    }
-                    else{
-
-
-                    wiced_rtos_delay_milliseconds( 1 );
-//                    sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
-                    sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi,data_btt[f].fallen);
-
-                                    memcpy(data_btt[f].mac_bt,NULL,17);
-//                                    memcpy(data_btt[f].type,NULL,17);
-                                    memcpy(data_btt[f].rssi,NULL,5);
-                                    memcpy(data_btt[f].fallen,NULL,2);
-
-
-
-                    result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-                    if(result==WICED_TCPIP_SUCCESS){
-
-                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-                        send_data_task=WICED_TRUE;
-
-                     }
-                    }
-                }
-                s_count_x=0;
-                data_send_bt=0;
-            }
-            else{
-//                wiced_gpio_output_high(Sat_WiFi);
-//                wiced_gpio_output_high(Sat_WiFi);
-//                blink_vehicle();
-
-//                sprintf(data_out,"\nV;%s,%s,%s\r\n",mac_wifi,mac_ap,ip);
-                sprintf(data_out,"\nU;%s,1600,%d%d%d%d0000000000000,%s,%s\r\n",mac_wifi,t1,t2,t3,t4,mac_ap,ip);
-                result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-                   if(result==WICED_TCPIP_SUCCESS){
-                       wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-                       send_data_task=WICED_TRUE;
-
-                    }
-
-            }
-
-        }
+//        if((s_count_x<=limit_data)){
+//            WPRINT_APP_INFO(("Multiple Tcp client\n"));
+//            if(s_count_x==limit_data){
+//                data_send_bt=limit_data;
+////                count_bt=0;
+//            }
+//            else if(s_count_x<limit_data){
+//                data_send_bt=s_count_x;
+////                count_bt=0;
+//            }
+//            if(s_count_x!=0){
+//
+////                blink_vehicle();
+//
+////                wiced_gpio_output_high(Sat_WiFi);
+////                wiced_gpio_output_high(Sat_WiFi);
+//
+//                WPRINT_APP_INFO( (">> es igual a %d en %s\n\n\n",s_count_x,mac_ap) );
+//
+//                for(int f=0;f<data_send_bt;f++){
+//                    if(f==0){
+////                    sprintf(data_out,"\nV;%s,%s,%s\r\n",mac_wifi,mac_ap,ip);
+//                        sprintf(data_out,"\nU;%s,1600,%d%d%d%d0000000000000,%s,%s\r\n",mac_wifi,t1,t2,t3,t4,mac_ap,ip);
+//                        result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                        if(result==WICED_TCPIP_SUCCESS){
+//                            wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                            send_data_task=WICED_TRUE;
+//                        }
+//                    }
+//                    else{
+//
+//
+//                    wiced_rtos_delay_milliseconds( 1 );
+////                    sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
+//                    sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi,data_btt[f].fallen);
+//
+//                                    memcpy(data_btt[f].mac_bt,NULL,17);
+////                                    memcpy(data_btt[f].type,NULL,17);
+//                                    memcpy(data_btt[f].rssi,NULL,5);
+//                                    memcpy(data_btt[f].fallen,NULL,2);
+//
+//
+//
+//                    result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                    if(result==WICED_TCPIP_SUCCESS){
+//
+//                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                        send_data_task=WICED_TRUE;
+//
+//                     }
+//                    }
+//                }
+//                s_count_x=0;
+//                data_send_bt=0;
+//            }
+//            else{
+////                wiced_gpio_output_high(Sat_WiFi);
+////                wiced_gpio_output_high(Sat_WiFi);
+////                blink_vehicle();
+//
+////                sprintf(data_out,"\nV;%s,%s,%s\r\n",mac_wifi,mac_ap,ip);
+//                sprintf(data_out,"\nU;%s,1600,%d%d%d%d0000000000000,%s,%s\r\n",mac_wifi,t1,t2,t3,t4,mac_ap,ip);
+//                result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                   if(result==WICED_TCPIP_SUCCESS){
+//                       wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                       send_data_task=WICED_TRUE;
+//
+//                    }
+//
+//            }
+//
+//        }
 
 //        wiced_gpio_output_low(Sat_WiFi);
+//        printf("gateway: %s\n",define_variable( &data_adq, 2));
+        printf("gateway: %d\n",data_adq.h_rate);
 
+        memcpy(data_adq.mac,mac_wifi,sizeof(mac_wifi));
+
+//        sprintf(data_out,"\n%s\r\n\n%s\r\n",define_variable( &data_adq, 2),define_variable( &data_adq, 2));
+//        result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//           if(result==WICED_TCPIP_SUCCESS){
+//               wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//               send_data_task=WICED_TRUE;
+//
+//            }
 
         wiced_tcp_stream_flush(&stream);
 

@@ -23,6 +23,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#include "BIOMETRICS/biometric.h"
+
 #include "waf_platform.h"
 
 #define  MAC_OTA   "12:23:34:45:56:67"
@@ -94,6 +96,8 @@ uint32_t expected_data_size = 1;
 unsigned char rx_buffer3[128];
 char recive3;
 
+
+
 char uart3[64];
 int k;
 
@@ -140,12 +144,17 @@ void main_uart(wiced_thread_arg_t arg){
                 }
                 else{
                     sprintf(uart3,"%s\n",rx_buffer3);
-//                    wiced_uart_transmit_bytes( WICED_UART_1, uart3, strlen(uart3));
+                    wiced_uart_transmit_bytes( WICED_UART_1, uart3, strlen(uart3));
 
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);
                     data_bt_send(rx_buffer3);
                     SEND_OTA(rx_buffer3);
+
+                    save_data(rx_buffer3, &data_adq, identify_device(rx_buffer3));
+                    printf("heart rate %d\n",data_adq.h_rate);
+                    printf("Uart: %s\n",define_variable( &data_adq, 2));
+                    data_adq.h_rate=20;
 
                     memset(&rx_buffer3,'\0',128);
                     memset(&rx_buffer,'\0',100);

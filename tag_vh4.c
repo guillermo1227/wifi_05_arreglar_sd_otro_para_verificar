@@ -107,7 +107,7 @@ void application_start( ){
 
 
 
-    wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
+//    wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
 
 //    blink_vehicle();
 //    wiced_gpio_output_high(Sat_WiFi);
