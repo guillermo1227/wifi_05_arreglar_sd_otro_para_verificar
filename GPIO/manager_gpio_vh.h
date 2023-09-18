@@ -200,7 +200,7 @@ wiced_result_t set_gpio(){
 //
 //    wiced_gpio_output_high(XRES_BLE);
 
-    wiced_gpio_output_low(STAT_CHARGER);
+    wiced_gpio_output_high(STAT_CHARGER);
 //    wiced_gpio_output_high(Sat_WiFi);
 //    wiced_rtos_delay_milliseconds( BUZ_TIME);
     wiced_gpio_output_low(Sat_WiFi);
@@ -291,6 +291,7 @@ void count_on_off(){
 //        WPRINT_APP_INFO( ("STV\n") );
         wiced_uart_transmit_bytes(WICED_UART_1,BTN_ABOR,strlen(BTN_ABOR));
 
+
     }
     else{
 //        WPRINT_APP_INFO( ("NNN Button on/off pressed 1\r\n") );
@@ -316,13 +317,6 @@ void reset_sequence(){
 
     }
     wiced_gpio_output_low(Sat_WiFi);
-}
-
-void check_sound(){
-    if(_sound_flag==WICED_TRUE){
-        _sound_flag=WICED_FALSE;
-        set_gpio_menssage(SOUND_ONOFF,silent);
-    }
 }
 
 

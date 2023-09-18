@@ -21,8 +21,8 @@ wiced_bool_t hide_on;
 
 
 #define lasec         "----------------Lasec Telecomunicaciones, S.A.P.I. De C.V.---------------- \r\n"
-#define VERSION     "Smart Vehicle 3.0 advanced version velardena 3.4.1_modulo_C\r\n"
-#define V_C         "TV:3.4.1_MC_VA"
+#define VERSION     "Smart Vehc 3.0 Acarreos version 3.8.1\r\n"
+#define V_C         "TV:3.8.1_P&A"
 
 //version 3.3.4         contine la activacion de sonido mejora en la pronta busqueda de red y actlizacion en funciomaneiento bt
 //version 3.3.4.18      Version en ingles
@@ -115,5 +115,26 @@ wiced_bool_t hide_on;
 
 
 #define ZOM_BT      "SOM\r\n"
+
+//#define language "ENG"
+
+
+#ifdef language
+    #define SOUND_OFF   "Sound OFF"
+    #define SOUND_ON    "Sound ON"
+    #define FALLEN_MAN  "Free Fall"
+    #define RISK_ZONE   "Risk Zone"
+    #define TRANSIT     "TRANSIT"
+
+
+#else
+    #define SOUND_OFF   "SONIDO DES"
+    #define SOUND_ON    "SONIDO ACT"
+    #define FALLEN_MAN  "HOM.CAIDO"
+    #define RISK_ZONE   "ZN.RIESGO"
+    #define TRANSIT     "TRANSITO"
+
+#endif
+
 
 #endif  /* stdbool.h */

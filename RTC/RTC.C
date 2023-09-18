@@ -1,206 +1,36 @@
-
+#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "wiced.h"
 
-#include "u8g_arm.h"
-
-#include "RTC_manager.c"
+#include "RTC_manager.h"
 
 
-void u8g_prepare(u8g_t* u8g)
-{
-    u8g_SetFont(u8g, u8g_font_6x10);
-    u8g_SetFontRefHeightExtendedText(u8g);
-    u8g_SetDefaultForegroundColor(u8g);
-    u8g_SetFontPosTop(u8g);
-}
-
-void u8g_box_frame(u8g_t* u8g, uint8_t a)
-{
-    u8g_DrawStr(u8g, 0, 0, "drawBox");
-    u8g_DrawBox(u8g, 5,10,20,10);
-    u8g_DrawBox(u8g, 10+a,15,30,7);
-    u8g_DrawStr(u8g,  0, 30, "drawFrame");
-    u8g_DrawFrame(u8g, 5,10+30,20,10);
-    u8g_DrawFrame(u8g, 10+a,15+30,30,7);
-}
-
-void u8g_disc_circle(u8g_t* u8g, uint8_t a)
-{
-    u8g_DrawStr(u8g,  0, 0, "drawDisc");
-    u8g_DrawDisc(u8g, 10,18,9, 0xFF);
-    u8g_DrawDisc(u8g, 24+a,16,7, 0xFF);
-    u8g_DrawStr(u8g,  0, 30, "drawCircle");
-    u8g_DrawCircle(u8g, 10,18+30,9, 0xFF);
-    u8g_DrawCircle(u8g, 24+a,16+30,7, 0xFF);
-}
-
-void u8g_r_frame(u8g_t* u8g, uint8_t a)
-{
-    u8g_DrawStr(u8g,  0, 0, "drawRFrame/Box");
-    u8g_DrawRFrame(u8g, 5, 10,40,30, a+1);
-    u8g_DrawRBox(u8g, 50, 10,25,40, a+1);
-}
-
-void u8g_string(u8g_t* u8g, uint8_t a)
-{
-    u8g_DrawStr(u8g, 30+a,31, " 0");
-    u8g_DrawStr90(u8g, 30,31+a, " 90");
-    u8g_DrawStr180(u8g, 30-a,31, " 180");
-    u8g_DrawStr270(u8g, 30,31-a, " 270");
-}
-
-void u8g_line(u8g_t* u8g, uint8_t a)
-{
-    u8g_DrawStr(u8g,  0, 0, "drawLine");
-    u8g_DrawLine(u8g, 7+a, 10, 40, 55);
-    u8g_DrawLine(u8g, 7+a*2, 10, 60, 55);
-    u8g_DrawLine(u8g, 7+a*3, 10, 80, 55);
-    u8g_DrawLine(u8g, 7+a*4, 10, 100, 55);
-}
-
-void u8g_triangle(u8g_t* u8g, uint8_t a)
-{
-    uint16_t offset = a;
-    u8g_DrawStr(u8g,  0, 0, "drawTriangle");
-    u8g_DrawTriangle(u8g, 14,7, 45,30, 10,40);
-    u8g_DrawTriangle(u8g, 14+offset,7-offset, 45+offset,30-offset, 57+offset,10-offset);
-    u8g_DrawTriangle(u8g, 57+offset*2,10, 45+offset*2,30, 86+offset*2,53);
-    u8g_DrawTriangle(u8g, 10+offset,40+offset, 45+offset,30+offset, 86+offset,53+offset);
-}
-
-void u8g_ascii_1(u8g_t* u8g)
-{
-    char s[2] = " ";
-    uint8_t x, y;
-    u8g_DrawStr(u8g,  0, 0, "ASCII page 1");
-    for( y = 0; y < 6; y++ )
-    {
-        for( x = 0; x < 16; x++ )
-        {
-            s[0] = y*16 + x + 32;
-            u8g_DrawStr(u8g, x*7, y*10+10, s);
-        }
-    }
-}
-
-void u8g_ascii_2(u8g_t* u8g)
-{
-    char s[2] = " ";
-    uint8_t x, y;
-    u8g_DrawStr(u8g,  0, 0, "ASCII page 2");
-    for( y = 0; y < 6; y++ )
-    {
-        for( x = 0; x < 16; x++ )
-        {
-            s[0] = y*16 + x + 160;
-            u8g_DrawStr(u8g, x*7, y*10+10, s);
-        }
-    }
-}
-
-void u8g_extra_page(u8g_t* u8g, uint8_t a)
-{
-    if (u8g_GetMode(u8g) == U8G_MODE_HICOLOR || u8g_GetMode(u8g) == U8G_MODE_R3G3B2)
-    {
-        u8g_uint_t r, g, b;
-        b = a << 5;
-        for( g = 0; g < 64; g++ )
-        {
-            for( r = 0; r < 64; r++ )
-            {
-                u8g_SetRGB(u8g, r<<2, g<<2, b );
-                u8g_DrawPixel(u8g, g, r);
-            }
-        }
-        u8g_SetRGB(u8g, 255,255,255);
-        u8g_DrawStr(u8g,  66, 0, "Color Page");
-    }
-    else if (u8g_GetMode(u8g) == U8G_MODE_GRAY2BIT )
-    {
-        u8g_DrawStr(u8g,  66, 0, "Gray Level");
-        u8g_SetColorIndex(u8g, 1);
-        u8g_DrawBox(u8g, 0, 4, 64, 32);
-        u8g_DrawBox(u8g, 70, 20, 4, 12);
-        u8g_SetColorIndex(u8g, 2);
-        u8g_DrawBox(u8g, 0+1*a, 4+1*a, 64-2*a, 32-2*a);
-        u8g_DrawBox(u8g, 74, 20, 4, 12);
-        u8g_SetColorIndex(u8g, 3);
-        u8g_DrawBox(u8g, 0+2*a, 4+2*a, 64-4*a, 32-4*a);
-        u8g_DrawBox(u8g, 78, 20, 4, 12);
-    }
-    else
-    {
-        u8g_DrawStr(u8g,  0, 12, "setScale2x2");
-        u8g_SetScale2x2(u8g);
-        u8g_DrawStr(u8g,  0, 6+a, "setScale2x2");
-        u8g_UndoScale(u8g);
-    }
-}
-
-void draw(u8g_t* u8g, uint8_t draw_state)
-{
-    u8g_prepare(u8g);
-    switch(draw_state >> 3)
-    {
-        case 0: u8g_box_frame(u8g, draw_state&7); break;
-        case 1: u8g_disc_circle(u8g, draw_state&7); break;
-        case 2: u8g_r_frame(u8g, draw_state&7); break;
-        case 3: u8g_string(u8g, draw_state&7); break;
-        case 4: u8g_line(u8g, draw_state&7); break;
-        case 5: u8g_triangle(u8g, draw_state&7); break;
-        case 6: u8g_ascii_1(u8g); break;
-        case 7: u8g_ascii_2(u8g); break;
-        case 8: u8g_extra_page(u8g, draw_state&7); break;
-    }
-}
-
+wiced_i2c_device_t i2c_rtc;
+uint8_t* current_file;
 
 void application_start( )
 {
     wiced_init( );
-//            date_set("04/07/22");
-//            time_set("09:06:10");
+    init_rtc(&i2c_rtc);
+    date_set("09/08/22",&i2c_rtc);
+    time_set("09:50:00",&i2c_rtc);
 
-//    wiced_i2c_device_t oled_display =
-//      {
-//          .port          = WICED_I2C_2,
-//          .address       = 0x3C,
-//          .address_width = I2C_ADDRESS_WIDTH_7BIT,
-//          .flags         = 0,
-//          .speed_mode    = I2C_HIGH_SPEED_MODE,
-//      };
-//      u8g_t u8g;
-//      uint8_t draw_state = 0;
-//
-//      u8g_init_wiced_i2c_device(&oled_display);
-//      u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_i2c, u8g_com_hw_i2c_fn);
+//    current_file = malloc(sizeof(uint8_t)*128);
 
-//    while(1) {
-//
-//
-//        u8g_FirstPage(&u8g);
-//
-//        do {
-//            draw(&u8g, draw_state);
-//        } while (u8g_NextPage(&u8g));
-//
-//        draw_state++;
-//        if ( draw_state >= 9*8 )
-//        {
-//            draw_state = 0;
-//        }
-//
-//        u8g_Delay(75);
-//
-//        time_get();
-//        date_get();
-//wiced_rtos_delay_milliseconds(50);
-//
-//    }
+    while(1)
+    {
 
+        WPRINT_APP_INFO( ( "TIEMPO: \t %s\n" ,time_get(&i2c_rtc)) );
 
+        WPRINT_APP_INFO( ( "FECHA: \t %s\n" ,date_get(&i2c_rtc)) );
 
+//        sprintf(current_file,"{\"mac\"[as]}\n");
+//        printf("%s",current_file);
+
+            wiced_rtos_delay_milliseconds( 1000 );
+
+    }
 }
 
 

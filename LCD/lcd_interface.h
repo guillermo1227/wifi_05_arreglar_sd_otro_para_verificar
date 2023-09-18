@@ -26,8 +26,10 @@
 
 #define fallen "FALLEN"
 #define C_OLED (30)
+wiced_bool_t flag_lcd_timer=WICED_FALSE;
 
 int coun_lcd=1;
+int refresh_oled=1;
 
 void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,char* c_v,wiced_bool_t flag);
 void displayThread(wiced_thread_arg_t arg);
@@ -39,24 +41,36 @@ uint8_t oled_things=1;
 
 wiced_bool_t First_one=WICED_FALSE;
 
-//#define language "ENG"
 
-#ifdef language
-    #define SOUND_OFF   "Sound OFF"
-    #define SOUND_ON    "Sound ON"
-    #define FALLEN_MAN  "Free Fall"
-    #define RISK_ZONE   "Risk Zone"
 
-#else
-    #define SOUND_OFF   "SONIDO DES"
-    #define SOUND_ON    "SONIDO ACT"
-    #define FALLEN_MAN  "HOM.CAIDO"
-    #define RISK_ZONE   "ZN.RIESGO"
-#endif
-
+#define _BACK       "B"
+#define _FRONT      "F"
+#define _BOTH       "A"
 
 /*************** OLED Display Thread ***************/
-/* Thread to display data on the OLED */
+
+/* Initialize the OLED display */
+wiced_i2c_device_t display_i2c = {
+    .port          = WICED_I2C_2,
+    .address       = 0x3C,
+    .address_width = I2C_ADDRESS_WIDTH_7BIT,
+    .flags         = 0,
+    .speed_mode    = I2C_STANDARD_SPEED_MODE,
+};
+
+u8g_t display;
+
+void int_lcd(){
+    u8g_init_wiced_i2c_device(&display_i2c);
+    u8g_InitComFn(&display, &u8g_dev_sh1106_128x64_2x_i2c, u8g_com_hw_i2c_fn);
+    u8g_SetFont(&display, u8g_font_gdr10);
+    u8g_SetFontPosTop(&display);
+}
+
+
+
+
+
 void displayThread(wiced_thread_arg_t arg)
 {
     char eva[25];
@@ -64,23 +78,8 @@ void displayThread(wiced_thread_arg_t arg)
     char intro[25];
     char lamp[2];
     char veh[2];
-    /* Initialize the OLED display */
-    wiced_i2c_device_t display_i2c =
-    {
-        .port          = WICED_I2C_2,
-        .address       = 0x3C,
-        .address_width = I2C_ADDRESS_WIDTH_7BIT,
-        .flags         = 0,
-        .speed_mode    = I2C_STANDARD_SPEED_MODE,
-    };
 
-    u8g_t display;
-
-    u8g_init_wiced_i2c_device(&display_i2c);
-
-    u8g_InitComFn(&display, &u8g_dev_sh1106_128x64_2x_i2c, u8g_com_hw_i2c_fn);
-    u8g_SetFont(&display, u8g_font_gdr10);
-    u8g_SetFontPosTop(&display);
+    int_lcd();
 
     sprintf(intro,"SMART FLOW");
     sprintf(eva,"RISK ZONE");
@@ -120,7 +119,17 @@ void displayThread(wiced_thread_arg_t arg)
             First_one=WICED_FALSE;
             oled_things=4;
         }
-        else if ((Evacaution==WICED_FALSE)&&(risk_z==WICED_FALSE)&&(fallen_f==WICED_FALSE)&&(First_one==WICED_TRUE)) {
+        else if((_flag_aca==WICED_TRUE)){
+            First_one=WICED_FALSE;
+            _flag_aca=WICED_FALSE;
+            oled_things=5;
+        }
+        else if((_B_transit==WICED_TRUE)&&(First_one==WICED_TRUE)){
+             First_one=WICED_FALSE;
+             _B_transit=WICED_FALSE;
+             oled_things=6;
+         }
+        else if ((Evacaution==WICED_FALSE)&&(risk_z==WICED_FALSE)&&(fallen_f==WICED_FALSE)&&(First_one==WICED_TRUE)&&(_flag_aca==WICED_FALSE)) {
             First_one=WICED_FALSE;
             oled_things=1;
         }
@@ -133,6 +142,7 @@ void displayThread(wiced_thread_arg_t arg)
         wiced_rtos_lock_mutex(&i2cMutex);
         do {
             coun_lcd=coun_lcd+1;
+            refresh_oled=refresh_oled+1;
 
 //            Set_Warning(&display,coun_lcd,"  ",&lamp,&veh,WICED_FALSE);
             if(frist_seen_silent==WICED_TRUE){
@@ -143,6 +153,7 @@ void displayThread(wiced_thread_arg_t arg)
                    Set_Warning(&display,coun_lcd,SOUND_ON,&lamp,&veh,3);
                }
                if (coun_lcd==(C_OLED*2)){
+//                   int_lcd();
                    frist_seen_silent=WICED_FALSE;
                    coun_lcd=0;
                    oled_things=1;
@@ -158,10 +169,16 @@ void displayThread(wiced_thread_arg_t arg)
                     Set_Warning(&display,coun_lcd,FALLEN_MAN,&lamp,&veh,WICED_TRUE);
                     break;
                 case 3:
-                    Set_Warning(&display,coun_lcd,"ZN.RIESGO",&lamp,&veh,WICED_TRUE);
+                    Set_Warning(&display,coun_lcd,RISK_ZONE,&lamp,&veh,WICED_TRUE);
                     break;
                 case 4:
                     Set_Warning(&display,coun_lcd,"Evacuati",&lamp,&veh,WICED_TRUE);
+                    break;
+                case 5:
+                    Set_Warning(&display,coun_lcd,&log_accarreos.name,&lamp,&veh,WICED_TRUE);
+                    break;
+                case 6:
+                    Set_Warning(&display,coun_lcd,TRANSIT,&lamp,&veh,WICED_TRUE);
                     break;
                 }
             }
@@ -171,9 +188,18 @@ void displayThread(wiced_thread_arg_t arg)
 
             if (coun_lcd==(C_OLED*2)){
                   coun_lcd=0;
+//                  int_lcd();
                   oled_things=1;
                   First_one=WICED_TRUE;
                }
+
+            if((refresh_oled==100)||(flag_lcd_timer==WICED_TRUE)){
+                refresh_oled=0;
+//                int_lcd();
+                flag_lcd_timer=WICED_FALSE;
+
+            }
+
 
         } while (u8g_NextPage(&display));
 
@@ -232,21 +258,28 @@ void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,cha
       u8g_SetFontPosTop(u8g);
 
 
-      if(strstr(_lateral_lam,"T")){
-          u8g_DrawBox(u8g, 4,0,24,10);
+      if(strstr(_lateral_lam,_BACK)){
+          u8g_DrawBox(u8g, 4,0,40,10);
       }
-      else if(strstr(_lateral_lam,"L")){
-          u8g_DrawBox(u8g, 4,52,50,62);
+      else if(strstr(_lateral_lam,_FRONT)){
+          u8g_DrawBox(u8g, 4,52,40,62);
 
       }
-
-      if(strstr(_lateral_veh,"T")){
-          u8g_DrawBox(u8g, 104,0,128,10);
+      else if(strstr(_lateral_lam,_BOTH)){
+          u8g_DrawBox(u8g, 4,52,40,62);
+          u8g_DrawBox(u8g, 4,0,40,10);
       }
-      else if(strstr(_lateral_veh,"L"))
+
+      if(strstr(_lateral_veh,_BACK)){
+          u8g_DrawBox(u8g, 88,0,128,10);
+      }
+      else if(strstr(_lateral_veh,_FRONT))
       {
-          u8g_DrawBox(u8g, 80,52,100,62);
-
+          u8g_DrawBox(u8g, 88,52,128,62);
+      }
+      else if(strstr(_lateral_veh,_BOTH)){
+          u8g_DrawBox(u8g, 88,52,128,62);
+          u8g_DrawBox(u8g, 88,0,128,10);
       }
 
 //     u8g_DrawBox(u8g, 4,52,50,62);
@@ -256,7 +289,7 @@ void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,cha
         if(count<=C_OLED){
           u8g_SetFont(u8g, u8g_font_gdb14);
           u8g_SetFontPosTop(u8g);
-          u8g_DrawStr(u8g, 2, 19,  eva);
+          u8g_DrawStr(u8g, 0, 19,  eva);
        }
        else if((count>C_OLED)&&(count<(C_OLED*2)+15)){
          u8g_SetFont(u8g, u8g_font_gdb30n);

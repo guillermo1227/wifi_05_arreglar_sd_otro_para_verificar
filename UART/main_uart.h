@@ -23,8 +23,6 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#include "BIOMETRICS/biometric.h"
-
 #include "waf_platform.h"
 
 #define  MAC_OTA   "12:23:34:45:56:67"
@@ -36,8 +34,15 @@
 //#include "TIMER/manager_timer_vh.h"
 //#include "NET/manager_tcp_client_vh.h"
 
+#define buff_aux    100
+#define filter_size     15
 
 static wiced_thread_t UART_M3;
+
+struct telemetry_data log_telemetry_data;
+struct location_data master_data;
+struct tempo AUX_BEACON[buff_aux];
+struct tempo_collision aux_log_collision[buff_aux];
 
 
 typedef struct data_in
@@ -85,7 +90,7 @@ wiced_uart_config_t uart_config =
     .stop_bits    = STOP_BITS_1,
     .flow_control = FLOW_CONTROL_DISABLED,
 };
-#define RX_BUFFER_SIZE    64
+#define RX_BUFFER_SIZE    128*2
 #define limit_data   100
 
 wiced_ring_buffer_t rx_buffer;
@@ -93,12 +98,10 @@ DEFINE_RING_BUFFER_DATA( uint8_t, rx_data, RX_BUFFER_SIZE)
 
 char c;
 uint32_t expected_data_size = 1;
-unsigned char rx_buffer3[128];
+unsigned char rx_buffer3[RX_BUFFER_SIZE];
 char recive3;
 
-
-
-char uart3[64];
+char uart3[RX_BUFFER_SIZE];
 int k;
 
 uint8_t lcd_fallen=5;
@@ -106,6 +109,30 @@ uint8_t count_v=1;
 uint8_t count_l=1;
 uint8_t* proximity=5;
 wiced_bool_t Evacaution=WICED_FALSE;
+
+int count_beacon=1;
+int count_save=1;
+int count_collision=1;
+int count_save_collision=1;
+
+
+struct Acarreos log_accarreos;
+int limit_log=0;
+
+
+
+int count_char(const char *cadena, char caracter) {
+    int contador = 0;
+    size_t longitud = strlen(cadena);
+
+    for (size_t i = 0; i < longitud; i++) {
+        if (cadena[i] == caracter) {
+            contador++;
+        }
+    }
+
+    return contador;
+}
 
 
 
@@ -123,6 +150,10 @@ void SEND_OTA(unsigned char* buffer_in ){
 
 }
 
+/*
+ * main loop to uart process  1 info.
+ *
+ * */
 void main_uart(wiced_thread_arg_t arg){
         char str;
         while(1){
@@ -131,12 +162,13 @@ void main_uart(wiced_thread_arg_t arg){
         /* Wait for user input. If received, echo it back to the terminal */
         while ( wiced_uart_receive_bytes( WICED_UART_1, &c, &expected_data_size, NEVER_TIMEOUT   ) == WICED_SUCCESS )
         {
+            wiced_rtos_lock_mutex(&HTTPMutex);
 
 //            wiced_uart_transmit_bytes( WICED_UART_1, &c, 1);
 
-            if(c == '\n'){
+            if((c == '\n')||(k==RX_BUFFER_SIZE)){
                 if(k==0){
-                    memset(&rx_buffer3,'\0',128);
+                    memset(&rx_buffer3,'\0',RX_BUFFER_SIZE);
                     memset(&rx_buffer,'\0',100);
                     memset(&c,'\0',k);
                     k=0;
@@ -144,19 +176,21 @@ void main_uart(wiced_thread_arg_t arg){
                 }
                 else{
                     sprintf(uart3,"%s\n",rx_buffer3);
-                    wiced_uart_transmit_bytes( WICED_UART_1, uart3, strlen(uart3));
+//                    wiced_uart_transmit_bytes( WICED_UART_1, uart3, strlen(uart3));
 
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);
+//                    SEND_OTA(rx_buffer3);
+                    data_file_write(rx_buffer3);
+//                    get_join_macbt(rx_buffer3);
+//                    collision_event_macbt(rx_buffer3);
+//                    collision_event_beacon(rx_buffer3);
                     data_bt_send(rx_buffer3);
-                    SEND_OTA(rx_buffer3);
 
-                    save_data(rx_buffer3, &data_adq, identify_device(rx_buffer3));
-//                    printf("heart rate %d\n",data_adq.h_rate);
-//                    printf("Uart: %s\n",define_variable( &data_adq, 2));
-//                    data_adq.h_rate=20;
+                    tamagochi(rx_buffer3,&log_accarreos);
+//                    limit_log=id_revived(rx_buffer3);
 
-                    memset(&rx_buffer3,'\0',128);
+                  memset(&rx_buffer3,'\0',RX_BUFFER_SIZE);
                     memset(&rx_buffer,'\0',100);
                     memset(&c,'\0',k);
                     k=0;
@@ -168,8 +202,10 @@ void main_uart(wiced_thread_arg_t arg){
             else{ rx_buffer3[k++] = c; }
 
             expected_data_size = 1;
+            wiced_rtos_unlock_mutex(&HTTPMutex);
 
             }
+
         }
 
         wiced_rtos_delay_milliseconds(1); // Yield control when button is not pressed
@@ -192,4 +228,300 @@ void uart_int(){
        wiced_rtos_create_thread(&UART_M3, THREAD_BASE_PRIORITY+2, "UART MAIN", main_uart, THREAD_STACK_SIZE, NULL);
 }
 
+
+void data_file_write(unsigned char* buffer_in ){
+    unsigned char str_switch[4];
+    unsigned char str_split[128];
+
+
+    wiced_bool_t wirte=WICED_FALSE;
+
+//    read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
+//    sprintf(s_Mac_W,"%02X:%02X:%02X:%02X:%02X:%02X",MacW.octet[0],MacW.octet[1],MacW.octet[2],MacW.octet[3],MacW.octet[4],MacW.octet[5]);
+
+    strncpy(str_switch,buffer_in,4);
+    strcpy(str_split,&buffer_in[4]);
+
+    char delim[2] = ",";
+    int x=0;
+
+    if(strstr(str_switch,"BNM:")&&(strstr(str_split,"GEOSF"))){
+//            count_save=1;
+            unsigned char *cvl1 = strtok(str_split, delim);
+            while(cvl1 != NULL){
+
+                switch (x) {
+                    case 0:
+//                        memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
+                        for(int b=0;b<20;b++){
+                            if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){
+//                                AUX_BEACON[b].flag=0;
+//                                printf("no existe \n");
+//                                wirte=WICED_FALSE;
+
+                            }
+                            else{
+                                AUX_BEACON[b].flag=1;
+
+                                printf("si existe \n");
+                                if(strlen(AUX_BEACON[b].time_start)!=0){
+                                    strcpy(AUX_BEACON[b].time_end,time_get(&i2c_rtc));
+                                    printf("OK end\n");
+                                }
+                                AUX_BEACON[b].flag=1;
+                                wirte=WICED_TRUE;
+                            }
+                        }
+                        if(wirte==WICED_FALSE){
+                            wirte=WICED_TRUE;
+                            printf("escribe %d\n",count_beacon);
+                            if(count_beacon<buff_aux){
+                                memcpy(AUX_BEACON[count_beacon].mac_bt,cvl1,17);
+                                if(strlen(AUX_BEACON[count_beacon].time_start)<1){
+                                    strcpy(AUX_BEACON[count_beacon].time_start,time_get(&i2c_rtc));
+                                    printf("OK\n");
+                                }
+                                count_beacon=count_beacon+1;
+                            }
+                            //                                count_beacon++;
+                        }
+
+                    break;
+                    case 1:
+//                        strcpy(data_btt[s_count_x+1].type,cvl1);
+//                        memcpy(master_data.bt_device.type,cvl1,17);
+
+                        break;
+                    case 2:
+//                        strcpy(data_btt[s_count_x+1].rssi,cvl1);
+                        break;
+                    case 3:
+//                        strcpy(data_btt[s_count_x+1].fallen,cvl1);
+                        break;
+                    default:
+                        break;
+                }
+                x++;
+                cvl1=strtok(NULL, delim);
+            }
+            x=0;
+
+
+
+//            read_data(SF_ROOT,"/01_08_2022.txt",&fs_handle);
+
+
+    }
+
+//    wiced_rtos_set_semaphore(&displaySemaphore);
+
+}
+
+void get_join_macbt(unsigned char* buffer_in){
+    unsigned char str_switch[3];
+        unsigned char str_split[RX_BUFFER_SIZE];
+        unsigned char pem_mac[17];
+        unsigned char str_temp[17];
+
+
+        strncpy(str_switch,buffer_in,3);
+//        WPRINT_APP_INFO( (">>VBT \r\n") );
+//         WPRINT_APP_INFO( ("%s \r\n",buffer_in) );
+
+        char delim[] = "$";     //establece como  realizara el split
+        int x=0;
+        if((memcmp(str_switch,"MBL",3)==0)&&(strlen(buffer_in)<=RX_BUFFER_SIZE-1)){
+
+            memcpy(str_split,&buffer_in[3],strlen(buffer_in)-2);
+
+            WPRINT_APP_INFO( ("%s \r\n",str_split) );
+
+            unsigned char *cvl1 = strtok(str_split, delim);
+            while(cvl1 != NULL){
+//                WPRINT_APP_INFO( ("strtok -> %s \r\n",cvl1) );
+//                strcpy(pem_mac,cvl1);
+//                WPRINT_APP_INFO( ("memecpy -> %s \r\n",pem_mac) );
+                switch (x) {
+                    case 0:
+//                        memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
+//                        printf("\tMAC ABORDADAS 0\t %s\n",cvl1 );
+
+                    break;
+                    case 1:
+//                        strcpy(data_btt[s_count_x+1].type,cvl1);
+                        printf("\tMAC ABORDADAS 1\t %s longuitud %d \t\n",cvl1 ,strlen(cvl1));
+//                       bt_joined.mac_lamp=cvl1;
+//                        char aux[strlen(cvl1)];
+//                        sprintf(aux,"%s",cvl1);
+                        memcpy(bt_joined.mac_lamp,cvl1,strlen(cvl1)-1);
+
+                        break;
+
+                    default:
+                        break;
+                }
+                x++;
+                cvl1=strtok(NULL, delim);
+            }
+            x=0;
+
+
+    }
+}
+
+/*
+ * BNM:9C:50:D1:1A:4D:C0,LAMP,0,1
+ * */
+void collision_event_macbt(unsigned char* buffer_in){
+    unsigned char str_switch[4];
+    unsigned char str_split[128];
+    unsigned char pem_mac[17];
+    unsigned char str_temp[17];
+
+    wiced_bool_t wirte_1=WICED_FALSE;
+    printf("%s\n",buffer_in);
+
+    strncpy(str_switch,buffer_in,4);
+    memcpy(str_split,buffer_in,strlen(buffer_in));
+
+    char delim[] = ",";     //establece como  realizara el split
+    int x=0;
+    if((strstr(buffer_in,"BNM|"))&&(strstr(buffer_in,"X"))&&((strstr(buffer_in,"GEOSF")==NULL))){
+
+        unsigned char *cvl_1 = strtok(str_split, "|");
+            cvl_1=strtok(NULL, "|");
+
+
+//            printf("%s\n",str_split);
+//            printf("%s\n",cvl_1);
+    unsigned char *cvl1 = strtok(cvl_1, delim);
+    while(cvl1 != NULL){
+//                WPRINT_APP_INFO( ("strtok -> %s \r\n",cvl1) );
+//                strcpy(pem_mac,cvl1);
+//                WPRINT_APP_INFO( ("memecpy -> %s \r\n",pem_mac) );
+        switch (x) {
+            case 0:
+//                memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
+//                printf("%s\n",cvl1);
+//                strcpy( bt_joined.mac_tag,cvl1);
+/*--------------------------------------------------------------------------------*/
+                printf("cuentas %d\n",count_char(cvl1,':'));
+                if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){
+                        for(int x=1;x<buff_aux;x++){
+                            if((strstr(aux_log_collision[x].mac_bt,cvl1))){
+                                printf("the collision continues: %s \n",cvl1);
+                                wirte_1=WICED_TRUE;
+                                aux_log_collision[x].flag=1;
+                            }
+                        }
+                        if(wirte_1==WICED_FALSE){
+                            wirte_1=WICED_TRUE;
+                            printf("Collison number %d\n",count_collision);
+                            if(count_collision<buff_aux){
+                                memset(aux_log_collision[count_collision].mac_bt,NULL,18);
+                                strncpy(aux_log_collision[count_collision].mac_bt,cvl1,17);
+//                                definir la condicion
+
+                                if(strlen(AUX_BEACON[count_beacon].time_start)<1){
+                                    strncpy(aux_log_collision[count_collision].time_start,time_get(&i2c_rtc),17);
+                                }
+                                count_collision=count_collision+1;
+                            }
+                        }
+                }
+/*--------------------------------------------------------------------------------*/
+
+            break;
+            case 1:
+//                strcpy(data_btt[s_count_x+1].type,cvl1);
+                break;
+            case 2:
+//                strcpy(data_btt[s_count_x+1].rssi,cvl1);
+                break;
+            case 3:
+//                strcpy(data_btt[s_count_x+1].fallen,cvl1);
+                break;
+            case 4:
+//                        stun mrcpy(data_btt[s_count_x+1].fallen,cvl1);
+                printf("%s\n",cvl1);
+//                wiced_rtos_set_semaphore(&semaphoreHandle_C); /* Set the semaphore */
+
+                break;
+            default:
+                break;
+        }
+        x++;
+        cvl1=strtok(NULL, delim);
+    }
+    x=0;
+
+
+
+//
+    }
+//
+//
+//
+//
+//
+}
+
+
+void collision_event_beacon(unsigned char* buffer_in){
+    unsigned char str_switch[4];
+    unsigned char str_split[128];
+    unsigned char pem_mac[17];
+    unsigned char str_temp[17];
+
+    strncpy(str_switch,buffer_in,4);
+    strcpy(str_split,&buffer_in[4]);
+
+    char delim[] = ",";     //establece como  realizara el split
+    int x=0;
+    if((strstr(str_switch,"BNM:"))&&(strstr(str_switch,"BEAC"))&&((strstr(str_switch,"GEOSF")==NULL))){
+
+    unsigned char *cvl1 = strtok(str_split, delim);
+    while(cvl1 != NULL){
+//                WPRINT_APP_INFO( ("strtok -> %s \r\n",cvl1) );
+//                strcpy(pem_mac,cvl1);
+//                WPRINT_APP_INFO( ("memecpy -> %s \r\n",pem_mac) );
+        switch (x) {
+            case 0:
+//                memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
+//                printf("%s\n",cvl1);
+                strcpy( bt_joined.mac_beacon,cvl1);
+
+//                bt_joined.mac_beacon
+//                printf("\t%s\n",bt_joined.mac_tag);
+//                printf("\t%s\n",bt_joined.mac_beacon);
+//                printf("\t%s\n",bt_joined.mac_lamp);
+//                printf("\t%s\n",bt_joined.mac_vehc);
+
+            break;
+            case 1:
+//                strcpy(data_btt[s_count_x+1].type,cvl1);
+                break;
+            case 2:
+//                strcpy(data_btt[s_count_x+1].rssi,cvl1);
+                break;
+            case 3:
+//                strcpy(data_btt[s_count_x+1].fallen,cvl1);
+                break;
+            case 4:
+//                        stun mrcpy(data_btt[s_count_x+1].fallen,cvl1);
+                printf("%s\n",cvl1);
+
+                break;
+            default:
+                break;
+        }
+        x++;
+        cvl1=strtok(NULL, delim);
+    }
+    x=0;
+
+
+    }
+
+}
 #endif  /* stdbool.h */

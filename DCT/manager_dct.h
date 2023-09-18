@@ -33,6 +33,7 @@
 #define INACTIVITY      6
 #define SOUND_ONOFF     7
 #define RESET_WIFI      8
+#define LOG_ID_LASET    9
 
 
 wiced_bool_t EnableRx=WICED_FALSE;
@@ -101,6 +102,9 @@ uint8_t get_gpio_menssage(int index){
            case 8:
               result_value=app_dct->DCT1;
               break;
+           case 9:
+              result_value=app_dct->DCT2;
+              break;
            default:
                break;
        }
@@ -127,6 +131,7 @@ uint8_t get_gpio_menssage(int index){
  * 6->  INACTIVITY
  * 7->  SOUND ON/OFF
  * 8->  RESET WIFI
+ * 9->  LOG_ID_LAST
  * */
 void set_gpio_menssage(uint8_t index,uint8_t value){
      dct_read_write_app_dct_t*       app_dct                  = NULL;
@@ -159,6 +164,9 @@ void set_gpio_menssage(uint8_t index,uint8_t value){
              break;
          case 8:
              app_dct->DCT1=value;
+             break;
+         case 9:
+             app_dct->DCT2=value;
              break;
          default:
              break;

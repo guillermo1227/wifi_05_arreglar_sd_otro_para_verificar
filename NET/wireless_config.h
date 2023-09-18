@@ -25,9 +25,11 @@ unsigned char*                    tx_data;
 #define TCP_SERVER_PORT_c                   8077
 #define TCP_PACKET_MAX_DATA_LENGTH        120
 
+//Flag to start tcp service
+#define TCP_SERVER_IP_ADDRESS MAKE_IPV4_ADDRESS(10,86,10,1)
 
 /* Change the server IP address to match the TCP echo server address */
-#define TCP_SERVER_IP_ADDRESS MAKE_IPV4_ADDRESS(10,86,10,1)
+//#define TCP_SERVER_IP_ADDRESS MAKE_IPV4_ADDRESS(10,86,10,1)
 
 
 uint8_t mac_wifi_Send[40];
