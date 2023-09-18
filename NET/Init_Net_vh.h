@@ -1,5 +1,5 @@
 /**********************************************************************************
-* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
+z* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 * All rights reserved.
 *
 * This document is the property of LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
@@ -23,10 +23,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-
-
-
 #include "http_client.h"
+
 //wiced_ip_address_t INITIALISER_IPV4_ADDRESS( ip_address, MAKE_IPV4_ADDRESS(177,241,233,66) );
 //wiced_ip_address_t INITIALISER_IPV4_ADDRESS( ip_address, MAKE_IPV4_ADDRESS(10,174,109,30) );
 //wiced_ip_address_t INITIALISER_IPV4_ADDRESS( ip_address, MAKE_IPV4_ADDRESS(10,90,120,10) );
@@ -243,7 +241,7 @@ void net_vehicle(){
 //
 //              wiced_rtos_create_thread(&ThreadHandle_C, THREAD_BASE_PRIORITY+5, "Collision", collision_event_log, THREAD_STACK_SIZE, NULL);
 //
-//      wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, Main_Thread_TCP, THREAD_STACK_SIZE, NULL);
+      wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, Main_Thread_TCP, THREAD_STACK_SIZE, NULL);
 
 //      Procesos previos necesarios para enviar los archivos uno por uno
 
@@ -251,7 +249,7 @@ void net_vehicle(){
 
 //      wiced_rtos_register_timed_event( &tcp_client_event, WICED_NETWORKING_WORKER_THREAD, &tcp_client,3000, 0 );
 
-      wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, publishThread, THREAD_STACK_SIZE, NULL);
+//      wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, publishThread, THREAD_STACK_SIZE, NULL);
 //      wiced_rtos_create_thread(&publishThreadHandle, THREAD_BASE_PRIORITY+1, NULL, tcp_client, THREAD_STACK_SIZE, NULL);
 
 
