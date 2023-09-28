@@ -323,10 +323,9 @@ int tcp_gateway( void ){
                                           memcpy(data_btt[f].rssi,NULL,4);
                                           memcpy(data_btt[f].fallen,NULL,2);
 
-
                           result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                           if(result==WICED_TCPIP_SUCCESS){
-                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                               send_data_task=WICED_TRUE;
 //                              return 1;
                            }
@@ -532,7 +531,7 @@ int tcp_client_aca( )
                         while( token != NULL ) {
                             //            printf( " >>>>>  %s\n", token );
                               wiced_rtos_delay_microseconds( 10 );
-                              sprintf(data_out,"\nHVT;%s\r\n",token);
+                              sprintf(data_out,"\nHV:%s\r\n",token);
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
 
                                  if(result==WICED_TCPIP_SUCCESS){
@@ -543,6 +542,13 @@ int tcp_client_aca( )
                              token = strtok(NULL, s);
                              coun--;
                             }
+                    }
+                    else{
+                        result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
+                        if(result==WICED_TCPIP_SUCCESS){
+                           wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
+                           send_data_task=WICED_TRUE;
+                        }
                     }
 
                             wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
@@ -789,7 +795,7 @@ int tcp_client_geo( )
                            while( token != NULL ) {
                                //            printf( " >>>>>  %s\n", token );
                                  wiced_rtos_delay_microseconds( 10 );
-                                 sprintf(data_out,"\nHVT;%s\r\n",token);
+                                 sprintf(data_out,"\nHV:%s\r\n",token);
                                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
 
                                     if(result==WICED_TCPIP_SUCCESS){
@@ -801,6 +807,14 @@ int tcp_client_geo( )
                                 coun--;
                                }
                        }
+                       else{
+                           result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
+                           if(result==WICED_TCPIP_SUCCESS){
+                               wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
+                               send_data_task=WICED_TRUE;
+
+                               }
+                         }
 
                                wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
 

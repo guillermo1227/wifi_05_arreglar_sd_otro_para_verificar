@@ -374,9 +374,10 @@ char* data_to_json(struct location_data *data  ){
     res=malloc(sizeof(char)*150);
 
 //    {"MacBt":"11:22:55:11:11:45","MacWiFi":"11:22:55:11:11:45","TimeStart":"10;02;01","TimeEnd":"10;08;05","Date":"27_02_22","Type":"BEAC"}\n
+//    HV:{"LogId":1,"DeviceId":"00:00:00:00:00:01","Reader":"00:00:00:00:00:02","EnterTime":"20/09/2023-16:11:23", "OutTime":"20/09/2023-17:11:23"}
     sprintf(res,
-    "{\"ID\":\"%s\",\"MacBt\":\"%s\",\"MacWiFi\":\"%s\",\"TimeStart\":\"%s\",\"TimeEnd\":\"%s\",\"Date\":\"%s\",\"Type\":\"BEAC\"}\n"
-    ,data->id,data->bt_device.mac_bt,data->bt_device.mac_wifi,data->time_start,data->time_end,data->date,data->state);
+    "{\"LogId\":%s,\"DeviceId\":\"%s\",\"Reader\":\"%s\",\"EnterTime\":\"%s-%s\",\"OutTime\":\"%s-%s\"}\n"
+    ,data->id,data->bt_device.mac_wifi,data->bt_device.mac_bt,data->date,data->time_start,data->date,data->time_end);
 
     return res;
 }
