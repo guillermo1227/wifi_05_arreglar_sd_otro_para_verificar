@@ -275,16 +275,15 @@ int tcp_gateway( void ){
         // Initialize the TCP stream
         wiced_tcp_stream_init(&stream, &socket);
 //
-        for(int f=0;f<100;f++){
-            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
-            memcpy(data_btt[f].rssi,"-85",5);
-            memcpy(data_btt[f].fallen,"0",2);
-        }
-
+//        for(int f=0;f<100;f++){
+//            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
+//            memcpy(data_btt[f].rssi,"-85",5);
+//            memcpy(data_btt[f].fallen,"0",2);
+//        }
 //
-//
-        s_count_x=100;
-        uint8_t coun;
+////
+////
+//        s_count_x=100;
 
               if((s_count_x<=limit_data)){
                   WPRINT_APP_INFO(("Multiple Tcp client\n"));
@@ -309,14 +308,14 @@ int tcp_gateway( void ){
                                 memcpy(data_btt[f].rssi,NULL,4);
                                 memcpy(data_btt[f].fallen,NULL,2);
                               if(result==WICED_TCPIP_SUCCESS){
-                                  wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                                  wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                                   send_data_task=WICED_TRUE;
                               }
                           }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
-                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
-//                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
+//                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
+                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
 
                                           memcpy(data_btt[f].mac_bt,NULL,17);
                                           memcpy(data_btt[f].type,NULL,17);
@@ -325,7 +324,7 @@ int tcp_gateway( void ){
 
                           result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                           if(result==WICED_TCPIP_SUCCESS){
-//                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                               send_data_task=WICED_TRUE;
 //                              return 1;
                            }
@@ -336,8 +335,8 @@ int tcp_gateway( void ){
                   }
                   else{
       //                sprintf(data_out,"\nV;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get(&i2c_rtc));
-                      sprintf(data_out,"\nL;%s,1600,%d%d%d%d0000000000000,%s,%s,%s,%s\r\n",mac_wifi,t1,t2,t3,t4,mac_ap,ip,time_get(&i2c_rtc),date_get(&i2c_rtc));
-//                      sprintf(data_out,"\nH;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get_log(&i2c_rtc));
+//                      sprintf(data_out,"\nL;%s,1600,%d%d%d%d0000000000000,%s,%s,%s,%s\r\n",mac_wifi,t1,t2,t3,t4,mac_ap,ip,time_get(&i2c_rtc),date_get(&i2c_rtc));
+                      sprintf(data_out,"\nH;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get_log(&i2c_rtc));
 //                      sprintf(data_out,"\nHVT:%s\r\n",data_to_json_acarreo(&log_accarreos,s_Mac_W));
 
                       result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
