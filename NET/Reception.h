@@ -530,7 +530,7 @@ int tcp_client_aca( )
                         while( token != NULL ) {
                             //            printf( " >>>>>  %s\n", token );
                               wiced_rtos_delay_microseconds( 10 );
-                              sprintf(data_out,"\nHV:%s\r\n",token);
+                              sprintf(data_out,"\nHVT:%s\r\n",token);
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
 
                                  if(result==WICED_TCPIP_SUCCESS){

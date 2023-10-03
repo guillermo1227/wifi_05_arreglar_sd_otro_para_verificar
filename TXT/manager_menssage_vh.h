@@ -112,7 +112,7 @@ wiced_bool_t hide_on;
 #define HC_ALERT_HC         "HCW\r\n"
 #define HC_G_ALERT          "\n   * * * ACELERACION REPENTINA * * *\r\n"
 #define CENTER              "CENTRO DE DESPACHO\r\n"
-#define NO_DATA             "NO DATA"
+#define NO_DATA             "\nNO DATA\r\n"
 
 #define ZOM_BT      "SOM\r\n"
 

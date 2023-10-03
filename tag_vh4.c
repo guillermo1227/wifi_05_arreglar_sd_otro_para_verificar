@@ -183,8 +183,7 @@ void application_start( ){
     Set_SERVER("-I10.174.107.60",20,WICED_UART_3);
     Set_MASK("-M255.255.248.0",16,WICED_UART_3);
     Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-
-    Set_IP("-C10.174.107.61",16,WICED_UART_3);
+    Set_IP("-C10.174.107.62",16,WICED_UART_3);
 
 //    Set_SSID("-SSF-DEMO",13,WICED_UART_3);
 //    Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
@@ -192,6 +191,7 @@ void application_start( ){
 //    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
 //    Set_IP("-C10.174.108.15",16,WICED_UART_3);
 //    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
+
     Set_config();
 
 //
@@ -204,7 +204,7 @@ void application_start( ){
 //    Set_IP("-C10.117.104.24",20,WICED_UART_3);
 //    Set_GATEWAY("-G10.117.103.254",16,WICED_UART_3);
 
-//            silent=WICED_TRUE;
+            silent=WICED_TRUE;
     sent_file_flag=WICED_TRUE;
 //    Set_SSID("-SL2",18,WICED_UART_3);
 //    Set_KEY("-KLasec123.",18,WICED_UART_3);
