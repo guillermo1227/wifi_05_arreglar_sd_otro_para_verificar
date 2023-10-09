@@ -21,8 +21,8 @@ wiced_bool_t hide_on;
 
 
 #define lasec         "----------------Lasec Telecomunicaciones, S.A.P.I. De C.V.---------------- \r\n"
-#define VERSION     "Smart Vehc 3.0 Acarreos version 3.8.1\r\n"
-#define V_C         "TV:3.8.1_P&A"
+#define VERSION     "Smart Vehc 3.0 producion y localizacion version 3.9.1\r\n"
+#define V_C         "TV:3.9.1_P&A_G"
 
 //version 3.3.4         contine la activacion de sonido mejora en la pronta busqueda de red y actlizacion en funciomaneiento bt
 //version 3.3.4.18      Version en ingles
