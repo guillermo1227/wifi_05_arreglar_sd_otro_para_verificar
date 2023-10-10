@@ -119,8 +119,6 @@ void tamagochi(char *input,struct Acarreos *acareo){
     unsigned char str_split[128];
     memset(str_split,'\0',128);
 
-
-
     if(strstr(input,ID_acarreo)&&(strlen(acareo->mac_bt)==0)){
         strcpy(acareo->time_start,time_get(&i2c_rtc));
         strcpy(acareo->date,date_get_log(&i2c_rtc));

@@ -200,7 +200,7 @@ wiced_result_t set_gpio(){
 //
 //    wiced_gpio_output_high(XRES_BLE);
 
-    wiced_gpio_output_high(STAT_CHARGER);
+    wiced_gpio_output_low(STAT_CHARGER);
 //    wiced_gpio_output_high(Sat_WiFi);
 //    wiced_rtos_delay_milliseconds( BUZ_TIME);
     wiced_gpio_output_low(Sat_WiFi);

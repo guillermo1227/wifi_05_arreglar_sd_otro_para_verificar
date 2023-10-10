@@ -84,7 +84,7 @@ bt_mc_cyp re_mac(wiced_mac_t mac){
 
 wiced_uart_config_t uart_config =
 {
-    .baud_rate    = 115200,
+    .baud_rate    = 230400,
     .data_width   = DATA_WIDTH_8BIT,
     .parity       = NO_PARITY,
     .stop_bits    = STOP_BITS_1,
@@ -234,25 +234,31 @@ void data_file_write(unsigned char* buffer_in ){
     unsigned char str_split[128];
 
 
-    wiced_bool_t wirte=WICED_FALSE;
+    wiced_bool_t wirte1=WICED_FALSE;
 
 //    read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
 //    sprintf(s_Mac_W,"%02X:%02X:%02X:%02X:%02X:%02X",MacW.octet[0],MacW.octet[1],MacW.octet[2],MacW.octet[3],MacW.octet[4],MacW.octet[5]);
 
     strncpy(str_switch,buffer_in,4);
-    strcpy(str_split,&buffer_in[4]);
+    memcpy(str_split,buffer_in,strlen(buffer_in));
 
     char delim[2] = ",";
     int x=0;
 
-    if(strstr(str_switch,"BNM:")&&(strstr(str_split,"GEOSF"))){
-//            count_save=1;
-            unsigned char *cvl1 = strtok(str_split, delim);
-            while(cvl1 != NULL){
+    if((strstr(buffer_in,"BNM|"))&&((strstr(buffer_in,"GEOSF")))){
 
-                switch (x) {
-                    case 0:
+        unsigned char *cvl_1 = strtok(str_split, "|");
+        cvl_1=strtok(NULL, "|");
+
+//            count_save=1;
+
+        unsigned char *cvl1 = strtok(cvl_1, delim);
+        while(cvl1 != NULL){
+
+            switch (x) {
+                case 0:
 //                        memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
+                    if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){
                         for(int b=0;b<20;b++){
                             if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){
 //                                AUX_BEACON[b].flag=0;
@@ -269,11 +275,11 @@ void data_file_write(unsigned char* buffer_in ){
                                     printf("OK end\n");
                                 }
                                 AUX_BEACON[b].flag=1;
-                                wirte=WICED_TRUE;
+                                wirte1=WICED_TRUE;
                             }
                         }
-                        if(wirte==WICED_FALSE){
-                            wirte=WICED_TRUE;
+                        if(wirte1==WICED_FALSE){
+                            wirte1=WICED_TRUE;
                             printf("escribe %d\n",count_beacon);
                             if(count_beacon<buff_aux){
                                 memcpy(AUX_BEACON[count_beacon].mac_bt,cvl1,17);
@@ -285,33 +291,36 @@ void data_file_write(unsigned char* buffer_in ){
                             }
                             //                                count_beacon++;
                         }
-
-                    break;
-                    case 1:
+                    }
+                break;
+                case 1:
 //                        strcpy(data_btt[s_count_x+1].type,cvl1);
 //                        memcpy(master_data.bt_device.type,cvl1,17);
 
-                        break;
-                    case 2:
+                    break;
+                case 2:
 //                        strcpy(data_btt[s_count_x+1].rssi,cvl1);
-                        break;
-                    case 3:
+                    break;
+                case 3:
 //                        strcpy(data_btt[s_count_x+1].fallen,cvl1);
-                        break;
-                    default:
-                        break;
-                }
-                x++;
-                cvl1=strtok(NULL, delim);
+                    break;
+                default:
+                    break;
             }
-            x=0;
+            x++;
+            cvl1=strtok(NULL, delim);
+        }
+        x=0;
 
 
 
 //            read_data(SF_ROOT,"/01_08_2022.txt",&fs_handle);
 
 
+
     }
+
+
 
 //    wiced_rtos_set_semaphore(&displaySemaphore);
 

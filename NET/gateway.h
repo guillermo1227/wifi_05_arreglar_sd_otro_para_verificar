@@ -311,15 +311,15 @@ void publishThread(wiced_thread_arg_t arg)
         // Initialize the TCP stream
         wiced_tcp_stream_init(&stream, &socket);
 //
-        for(int f=0;f<100;f++){
-            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
-            memcpy(data_btt[f].rssi,"-85",5);
-            memcpy(data_btt[f].fallen,"0",2);
-        }
-
+//        for(int f=0;f<100;f++){
+//            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
+//            memcpy(data_btt[f].rssi,"-85",5);
+//            memcpy(data_btt[f].fallen,"0",2);
+//        }
 //
-
-        s_count_x=100;
+////
+//
+//        s_count_x=100;
         uint8_t coun;
         // Send the data via the stream
               if(sent_file_flag==WICED_TRUE){
@@ -462,7 +462,7 @@ void data_bt_send(unsigned char* buffer_in ){
 
        char delim[] = ",";     //establece como  realizara el split
        int x=0;
-    if(strstr(str_switch,"BNM:")){
+    if(strstr(str_switch,"BNM|")){
 
            if(s_count_x==limit_data){
                data_send_bt=s_count_x;

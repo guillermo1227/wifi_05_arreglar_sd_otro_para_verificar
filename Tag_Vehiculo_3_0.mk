@@ -27,7 +27,8 @@ LWIP_NETIF_HOSTNAME==1
 $(NAME)_COMPONENTS := graphics/u8g \
     					protocols/HTTP_client \
     					protocols/MQTT
-
+    					
+    					
 #GLOBAL_DEFINES += WICED_DISABLE_STDIO
 
 

@@ -87,7 +87,7 @@ void init_all_timer(){
 //        wiced_rtos_start_timer(&publishTimer);
         wiced_rtos_register_timed_event( &guardian, WICED_NETWORKING_WORKER_THREAD, &guardian_v, 1200, 0 );
         wiced_rtos_register_timed_event( &guardian2, WICED_NETWORKING_WORKER_THREAD, &guardian_V2, 1000, 0 );
-        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 500, 0 );
+        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 800, 0 );
         wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4000, 0 );
 
 //        wiced_rtos_create_thread(&ThreadHandle_W, THREAD_BASE_PRIORITY+5, "WIFI", SearchWifi, THREAD_STACK_SIZE, NULL);
@@ -201,20 +201,20 @@ static wiced_result_t Collision_V( void ){
 
 static wiced_result_t Beacon_V( void ){
 
-//    for(int b=0;b<20;b++){
-//
-//            if(strlen(AUX_BEACON[b].mac_bt)!=0){
-//                printf("%s,%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start,AUX_BEACON[b].time_end);}
-//    }
+    for(int b=0;b<20;b++){
 
-    if(count_save==10){
+            if(strlen(AUX_BEACON[b].mac_bt)!=0){
+                printf("%s,%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start,AUX_BEACON[b].time_end);}
+    }
+
+    if(count_save==8){
         for(int b=1;b<20;b++){
             AUX_BEACON[b].flag=0;
         }
 //        count_save=1;
 
     }
-    else if(count_save==20){
+    else if(count_save==14){
         for(int b=0;b<20;b++){
 
             if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
