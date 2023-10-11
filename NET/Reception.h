@@ -324,7 +324,7 @@ int tcp_gateway( void ){
 
                           result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                           if(result==WICED_TCPIP_SUCCESS){
-                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                               send_data_task=WICED_TRUE;
 //                              return 1;
                            }
@@ -341,7 +341,7 @@ int tcp_gateway( void ){
 
                       result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
-                             wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                             wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                              send_data_task=WICED_TRUE;
                           }
 
@@ -534,7 +534,7 @@ int tcp_client_aca( )
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
 
                                  if(result==WICED_TCPIP_SUCCESS){
-                                     wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                                     wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                                      send_data_task=WICED_TRUE;
 
                                   }
@@ -798,7 +798,7 @@ int tcp_client_geo( )
                                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
 
                                     if(result==WICED_TCPIP_SUCCESS){
-                                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                                         send_data_task=WICED_TRUE;
 
                                      }

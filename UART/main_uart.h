@@ -245,7 +245,7 @@ void data_file_write(unsigned char* buffer_in ){
     char delim[2] = ",";
     int x=0;
 
-    if((strstr(buffer_in,"BNM|"))&&((strstr(buffer_in,"GEOSF")))){
+    if((strstr(buffer_in,"BNM|"))&&((strstr(buffer_in,"GEOSF")))&&((strstr(buffer_in,"LAMP"))==NULL)&&((strstr(buffer_in,"VEHC"))==NULL)){
 
         unsigned char *cvl_1 = strtok(str_split, "|");
         cvl_1=strtok(NULL, "|");
