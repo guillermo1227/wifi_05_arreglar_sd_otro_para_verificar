@@ -89,7 +89,7 @@ void init_all_timer(){
 //        wiced_rtos_start_timer(&publishTimer);
         wiced_rtos_register_timed_event( &guardian, WICED_NETWORKING_WORKER_THREAD, &guardian_v, 1200, 0 );
         wiced_rtos_register_timed_event( &guardian2, WICED_NETWORKING_WORKER_THREAD, &guardian_V2, 1000, 0 );
-        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 500, 0 );
+        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 700, 0 );
         wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4000, 0 );
 
 //        wiced_rtos_create_thread(&ThreadHandle_W, THREAD_BASE_PRIORITY+5, "WIFI", SearchWifi, THREAD_STACK_SIZE, NULL);
@@ -245,12 +245,12 @@ static wiced_result_t Beacon_V( void ){
 
                 if(atoi(id_count)<=limit_save_file){
                     write_data(SF_ROOT,date_get(&i2c_rtc),master_data,&fs_handle);
-
                 }
                 else{
                     printf("Excedio el limite %d\n",atoi(id_count));
                 }
 //                printf("%s",filebuf);
+                reg_incoming=WICED_FALSE;
 
             }
         }
@@ -410,6 +410,12 @@ void Time_reboot(void* arg){
      }
      else{
          c_silent=0;
+     }
+
+
+     if((tcp_down_connect==WICED_TRUE)&&(reg_incoming==WICED_FALSE)){
+
+         wiced_framework_reboot();
      }
 
 }

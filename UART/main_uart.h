@@ -27,6 +27,9 @@
 
 #define  MAC_OTA   "12:23:34:45:56:67"
 
+wiced_bool_t reg_incoming=WICED_FALSE;
+wiced_bool_t tcp_down_connect=WICED_FALSE;
+
 
 //#include "TXT/Defines.h"
 #include "TXT/manager_menssage_vh.h"
@@ -190,7 +193,7 @@ void main_uart(wiced_thread_arg_t arg){
                     tamagochi(rx_buffer3,&log_accarreos);
 //                    limit_log=id_revived(rx_buffer3);
 
-                  memset(&rx_buffer3,'\0',RX_BUFFER_SIZE);
+                    memset(&rx_buffer3,'\0',RX_BUFFER_SIZE);
                     memset(&rx_buffer,'\0',100);
                     memset(&c,'\0',k);
                     k=0;
@@ -249,8 +252,8 @@ void data_file_write(unsigned char* buffer_in ){
 
         unsigned char *cvl_1 = strtok(str_split, "|");
         cvl_1=strtok(NULL, "|");
-
-//            count_save=1;
+        reg_incoming=WICED_TRUE;
+                //            count_save=1;
 
         unsigned char *cvl1 = strtok(cvl_1, delim);
         while(cvl1 != NULL){
@@ -273,6 +276,7 @@ void data_file_write(unsigned char* buffer_in ){
                                 if(strlen(AUX_BEACON[b].time_start)!=0){
                                     strcpy(AUX_BEACON[b].time_end,time_get(&i2c_rtc));
                                     printf("OK end\n");
+
                                 }
                                 AUX_BEACON[b].flag=1;
                                 wirte1=WICED_TRUE;

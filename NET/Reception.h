@@ -192,12 +192,14 @@ int tcp_gateway( void ){
         if ( result != WICED_SUCCESS )
         {
             try_n=try_n+1;
-            if(try_n==TCP_DOWN_NUMBER){
+            if(try_n>=TCP_DOWN_NUMBER){
 //                   set_name();
                 check_sound_onoff();
                  wiced_rtos_delay_milliseconds(100);
 //                     set_name();
-               wiced_framework_reboot();
+                 tcp_down_connect=WICED_TRUE;
+
+//               wiced_framework_reboot();
             }
 
         }
@@ -211,13 +213,14 @@ int tcp_gateway( void ){
         if(result!=WICED_SUCCESS)
         {
             try_n=try_n+1;
-            if(try_n==TCP_DOWN_NUMBER){
+            if(try_n>=TCP_DOWN_NUMBER){
 //                   set_name();
                 check_sound_onoff();
 
                  wiced_rtos_delay_milliseconds(100);
+                 tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+//               wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 2\n"));
@@ -234,13 +237,14 @@ int tcp_gateway( void ){
         if ( result != WICED_SUCCESS )
         {
             try_n=try_n+1;
-            if(try_n==TCP_DOWN_NUMBER){
+            if(try_n>=TCP_DOWN_NUMBER){
 ////                   set_name();
                 check_sound_onoff();
                      wiced_rtos_delay_milliseconds(100);
 
+                 tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+//               wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 3\n"));
@@ -274,15 +278,15 @@ int tcp_gateway( void ){
 
         // Initialize the TCP stream
         wiced_tcp_stream_init(&stream, &socket);
-//
+////
 //        for(int f=0;f<100;f++){
 //            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
 //            memcpy(data_btt[f].rssi,"-85",5);
 //            memcpy(data_btt[f].fallen,"0",2);
 //        }
 //
-////
-////
+//////
+//////
 //        s_count_x=100;
 
               if((s_count_x<=limit_data)){
@@ -315,7 +319,8 @@ int tcp_gateway( void ){
                           else{
                           wiced_rtos_delay_microseconds( 10 );
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
-                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
+//                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
+                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
 
                                           memcpy(data_btt[f].mac_bt,NULL,17);
                                           memcpy(data_btt[f].type,NULL,17);
@@ -406,7 +411,7 @@ int tcp_client_aca( )
                   check_sound_onoff();
                    wiced_rtos_delay_milliseconds(100);
   //                     set_name();
-                 wiced_framework_reboot();
+//                 wiced_framework_reboot();
               }
 
   //            WPRINT_APP_INFO(("falied 1\n"));
@@ -448,7 +453,7 @@ int tcp_client_aca( )
   //                     wiced_rtos_delay_microseconds(2000);
   //
   //                 }
-                 wiced_framework_reboot();
+//                 wiced_framework_reboot();
               }
 
               WPRINT_APP_INFO(("falied 2\n"));
@@ -481,7 +486,7 @@ int tcp_client_aca( )
   //
   //            }
 
-                 wiced_framework_reboot();
+//                 wiced_framework_reboot();
               }
 
               WPRINT_APP_INFO(("falied 3\n"));
@@ -671,7 +676,7 @@ int tcp_client_geo( )
                      check_sound_onoff();
                       wiced_rtos_delay_milliseconds(100);
      //                     set_name();
-                    wiced_framework_reboot();
+//                    wiced_framework_reboot();
                  }
 
      //            WPRINT_APP_INFO(("falied 1\n"));
@@ -713,7 +718,7 @@ int tcp_client_geo( )
      //                     wiced_rtos_delay_microseconds(2000);
      //
      //                 }
-                    wiced_framework_reboot();
+//                    wiced_framework_reboot();
                  }
 
                  WPRINT_APP_INFO(("falied 2\n"));
@@ -746,7 +751,7 @@ int tcp_client_geo( )
      //
      //            }
 
-                    wiced_framework_reboot();
+//                    wiced_framework_reboot();
                  }
 
                  WPRINT_APP_INFO(("falied 3\n"));

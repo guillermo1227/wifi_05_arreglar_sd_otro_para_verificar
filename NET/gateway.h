@@ -311,11 +311,11 @@ void publishThread(wiced_thread_arg_t arg)
         // Initialize the TCP stream
         wiced_tcp_stream_init(&stream, &socket);
 //
-//        for(int f=0;f<100;f++){
-//            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
-//            memcpy(data_btt[f].rssi,"-85",5);
-//            memcpy(data_btt[f].fallen,"0",2);
-//        }
+        for(int f=0;f<100;f++){
+            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
+            memcpy(data_btt[f].rssi,"-85",5);
+            memcpy(data_btt[f].fallen,"0",2);
+        }
 //
 ////
 //
@@ -390,7 +390,7 @@ void publishThread(wiced_thread_arg_t arg)
                           }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
-                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
+                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
 
                                           memcpy(data_btt[f].mac_bt,NULL,17);
@@ -402,7 +402,7 @@ void publishThread(wiced_thread_arg_t arg)
                           result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                           if(result==WICED_TCPIP_SUCCESS){
 
-//                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                               send_data_task=WICED_TRUE;
 
                            }
@@ -479,7 +479,12 @@ void data_bt_send(unsigned char* buffer_in ){
                            memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
                        break;
                        case 1:
-   //                        strcpy(data_btt[s_count_x+1].type,cvl1);
+                           if(strstr(buffer_in,"LAMP")||(strstr(buffer_in,"VEHC"))){
+                               strcpy(data_btt[s_count_x+1].type,"LAMP");
+                           }
+                           else{
+                               strcpy(data_btt[s_count_x+1].type,"BEAC");
+                           }
                            break;
                        case 2:
                            strcpy(data_btt[s_count_x+1].rssi,cvl1);
