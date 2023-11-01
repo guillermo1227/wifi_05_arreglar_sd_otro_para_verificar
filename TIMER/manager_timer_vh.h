@@ -1,5 +1,5 @@
 /**********************************************************************************
-* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
+t* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 * All rights reserved.
 *
 * This document is the property of LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
@@ -27,7 +27,7 @@
 
 void Time_reboot(void* arg);
 #define TIMER_TIME (1000)
-#define TIME_LOC (30)
+#define TIME_LOC (6)
 
 
 static wiced_timer_t timerHandle_reset;
@@ -89,7 +89,7 @@ void init_all_timer(){
 //        wiced_rtos_start_timer(&publishTimer);
         wiced_rtos_register_timed_event( &guardian, WICED_NETWORKING_WORKER_THREAD, &guardian_v, 1200, 0 );
         wiced_rtos_register_timed_event( &guardian2, WICED_NETWORKING_WORKER_THREAD, &guardian_V2, 1000, 0 );
-        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 700, 0 );
+        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 2100, 0 );
         wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4000, 0 );
 
 //        wiced_rtos_create_thread(&ThreadHandle_W, THREAD_BASE_PRIORITY+5, "WIFI", SearchWifi, THREAD_STACK_SIZE, NULL);
@@ -203,21 +203,21 @@ static wiced_result_t Collision_V( void ){
 
 static wiced_result_t Beacon_V( void ){
 
-    for(int b=0;b<20;b++){
-
-            if(strlen(AUX_BEACON[b].mac_bt)!=0){
-                printf("%s,%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start,AUX_BEACON[b].time_end);}
-    }
+//    for(int b=0;b<20;b++){
+//
+//            if(strlen(AUX_BEACON[b].mac_bt)!=0){
+//                printf("%s,%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start,AUX_BEACON[b].time_end);}
+//    }
 
     if(count_save==(TIME_LOC/2)){
-        for(int b=1;b<20;b++){
+        for(int b=1;b<buff_aux;b++){
             AUX_BEACON[b].flag=0;
         }
 //        count_save=1;
 
     }
     else if(count_save==TIME_LOC){
-        for(int b=0;b<20;b++){
+        for(int b=0;b<buff_aux;b++){
 
             if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
 //                printf("%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start);

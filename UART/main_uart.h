@@ -87,7 +87,7 @@ bt_mc_cyp re_mac(wiced_mac_t mac){
 
 wiced_uart_config_t uart_config =
 {
-    .baud_rate    = 115200,
+    .baud_rate    = 230400,
     .data_width   = DATA_WIDTH_8BIT,
     .parity       = NO_PARITY,
     .stop_bits    = STOP_BITS_1,
