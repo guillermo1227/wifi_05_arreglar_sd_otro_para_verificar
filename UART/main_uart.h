@@ -249,11 +249,12 @@ void data_file_write(unsigned char* buffer_in ){
     int x=0;
 
     if((strstr(buffer_in,"BNM|"))&&((strstr(buffer_in,"GEOSF")))&&((strstr(buffer_in,"LAMP"))==NULL)&&((strstr(buffer_in,"VEHC"))==NULL)){
-
+        _B_transit=WICED_TRUE;
         unsigned char *cvl_1 = strtok(str_split, "|");
         cvl_1=strtok(NULL, "|");
         reg_incoming=WICED_TRUE;
                 //            count_save=1;
+        GEOSF_F=WICED_TRUE;
 
         unsigned char *cvl1 = strtok(cvl_1, delim);
         while(cvl1 != NULL){

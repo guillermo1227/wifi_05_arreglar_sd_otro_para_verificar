@@ -137,7 +137,20 @@ static wiced_result_t Acarreo_V( void ){
     }
 
 //
-       printf("%s",filebuf);
+    if((Product_f==WICED_TRUE)&&(GEOSF_F==WICED_TRUE)){
+         Product_f=WICED_FALSE;
+         GEOSF_F=WICED_FALSE;
+
+         buzz(200,0);
+         printf("prendio");
+     }
+    else if((Product_f==WICED_FALSE)&&(GEOSF_F==WICED_FALSE)){
+        Product_f=WICED_TRUE;
+        printf("no prendio nada\n");
+
+    }
+    printf("\t%d\t%d\n",Product_f,GEOSF_F);
+    GEOSF_F=WICED_FALSE;
 
 }
 

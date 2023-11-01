@@ -24,6 +24,9 @@ char split_date_api[40];
 char aux_time[8];
 
 
+wiced_bool_t Product_f=WICED_TRUE;
+wiced_bool_t GEOSF_F=WICED_FALSE;
+
 
 /* RTOS global constructs */
 static wiced_semaphore_t displaySemaphore;
@@ -184,15 +187,15 @@ void application_start( ){
 //    Set_MASK("-M255.255.248.0",16,WICED_UART_3);
 //    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
 //    Set_IP("-C10.174.107.62",16,WICED_UART_3);
-
-    Set_SSID("-SSF-DEMO",13,WICED_UART_3);
-    Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
-    Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
-    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-    Set_IP("-C10.174.108.60",16,WICED_UART_3);
-    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-
-    Set_config();
+//
+//    Set_SSID("-SSF-DEMO",13,WICED_UART_3);
+//    Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
+//    Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
+//    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
+//    Set_IP("-C10.174.108.15",16,WICED_UART_3);
+//    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
+//
+//    Set_config();
 
 //
 
