@@ -230,7 +230,7 @@ static wiced_result_t Beacon_V( void ){
 
     }
     else if(count_save==TIME_LOC){
-        for(int b=0;b<buff_aux;b++){
+        for(int b=1;b<buff_aux;b++){
 
             if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
 //                printf("%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start);

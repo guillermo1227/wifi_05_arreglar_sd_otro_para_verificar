@@ -263,7 +263,7 @@ void data_file_write(unsigned char* buffer_in ){
                 case 0:
 //                        memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
                     if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){
-                        for(int b=0;b<20;b++){
+                        for(int b=0;b<buff_aux;b++){
                             if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){
 //                                AUX_BEACON[b].flag=0;
 //                                printf("no existe \n");
