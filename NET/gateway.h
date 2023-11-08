@@ -482,6 +482,9 @@ void data_bt_send(unsigned char* buffer_in ){
                            if(strstr(buffer_in,"LAMP")||(strstr(buffer_in,"VEHC"))){
                                strcpy(data_btt[s_count_x+1].type,"LAMP");
                            }
+                           else if(strstr(buffer_in,"BEAC")){
+                               strcpy(data_btt[s_count_x+1].type,"BEAC");
+                           }
                            else{
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
                            }

@@ -39,7 +39,7 @@
 #define ANTICOLISION            "Anticolision"
 #define ACARREO                 "Acarreo"
 
-char id_count[2];
+char id_count[4];
 char id_count_collision[2];
 
 #include "wiced.h"
@@ -97,7 +97,7 @@ void init_sd(wiced_filesystem_t* fs_handle){
           result = wiced_filesystem_init();
           if ( result != WICED_SUCCESS  )
           {
-          printf( "Error initing filesystems\n");
+              printf( "Error initing filesystems\n");
           }
 
           /* TEST FileX */
@@ -107,7 +107,7 @@ void init_sd(wiced_filesystem_t* fs_handle){
 
           if ( result != WICED_SUCCESS )
           {
-          printf( "Error mounting filesystem\n" );
+              printf( "Error mounting filesystem\n" );
           }
 //}
 
