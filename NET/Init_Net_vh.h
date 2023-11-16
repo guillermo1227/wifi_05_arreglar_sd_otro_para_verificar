@@ -191,10 +191,10 @@ void net_vehicle(){
 
         }
 
-      wiced_network_set_hostname("LASEC");
+      wiced_network_set_hostname("SMART FLOW");
 //      wiced_network_up()
 
-      result = wiced_ip_up( interface, WICED_USE_STATIC_IP, &device_init_ip_settings2 );
+      result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
 //            result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
 //
 //

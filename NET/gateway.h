@@ -484,6 +484,8 @@ void data_bt_send(unsigned char* buffer_in ){
                            }
                            else if(strstr(buffer_in,"BEAC")){
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
+                               GEOSF_F=WICED_TRUE;
+
                            }
                            else{
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
