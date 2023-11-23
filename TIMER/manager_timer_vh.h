@@ -115,6 +115,9 @@ static wiced_result_t Acarreo_V( void ){
 //
 //            memset(id_count,'1',2);
     if(strlen(log_accarreos.mac_bt)!=0){
+        wiced_filesystem_unmount(&fs_handle);
+        init_sd(&fs_handle);
+
         read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
 
         strcpy(log_accarreos.id,id_count);
@@ -125,12 +128,13 @@ static wiced_result_t Acarreo_V( void ){
 
         if(atoi(id_count)<=limit_save_file){
             write_data_acarreo(ACARREO_ROOT,date_get(&i2c_rtc),&log_accarreos,s_Mac_W,&fs_handle);
+            memset(log_accarreos.date,NULL,12);
+            memset(log_accarreos.mac_bt,NULL,19);
+            memset(log_accarreos.name,NULL,18);
+            memset(log_accarreos.id,NULL,3);
+            memset(log_accarreos.time_start,NULL,12);
         }
-        memset(log_accarreos.date,NULL,12);
-        memset(log_accarreos.mac_bt,NULL,19);
-        memset(log_accarreos.name,NULL,18);
-        memset(log_accarreos.id,NULL,3);
-        memset(log_accarreos.time_start,NULL,12);
+
 //        log_accarreos.id=0;
 
 
@@ -151,6 +155,11 @@ static wiced_result_t Acarreo_V( void ){
     }
     printf("\t%d\t%d\n",Product_f,GEOSF_F);
     GEOSF_F=WICED_FALSE;
+
+
+
+
+
 
 }
 
@@ -186,6 +195,10 @@ static wiced_result_t Collision_V( void ){
 
                    if(atoi(id_count_collision)<=limit_save_file){
                        write_data_collision(ANTICOLISION_ROOT,date_get(&i2c_rtc),&fs_handle,&bt_joined,&aux_log_collision[e],date_get_log(&i2c_rtc),s_Mac_W);
+                       memset(aux_log_collision[e].mac_bt,NULL,18);
+                       memset(bt_joined.mac_lamp,NULL,254);
+                       memset(bt_joined.mac_vehc,NULL,254);
+                       memset(bt_joined.mac_beacon,NULL,40);
                    }
 
                    printf("Index : %d",count_collision);
@@ -233,6 +246,10 @@ static wiced_result_t Beacon_V( void ){
         for(int b=1;b<buff_aux;b++){
 
             if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
+                wiced_filesystem_unmount(&fs_handle);
+                init_sd(&fs_handle);
+
+
 //                printf("%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start);
 
                 strcpy(master_data.bt_device.mac_bt,AUX_BEACON[b].mac_bt);
@@ -242,9 +259,7 @@ static wiced_result_t Beacon_V( void ){
                 strcpy(master_data.bt_device.mac_wifi,s_Mac_W);
                 strcpy(master_data.state,"off");
 
-                memset(AUX_BEACON[b].mac_bt,NULL,17);
-                memset(AUX_BEACON[b].time_start,NULL,11);
-                memset(AUX_BEACON[b].time_end,NULL,11);
+
 //                printf("%s\n",read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle));
 //               strcpy(master_data.id,read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle));
                 read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
@@ -258,6 +273,9 @@ static wiced_result_t Beacon_V( void ){
 
                 if(atoi(id_count)<=limit_save_file){
                     write_data(SF_ROOT,date_get(&i2c_rtc),master_data,&fs_handle);
+                    memset(AUX_BEACON[b].mac_bt,NULL,17);
+                    memset(AUX_BEACON[b].time_start,NULL,11);
+                    memset(AUX_BEACON[b].time_end,NULL,11);
                 }
                 else{
                     printf("Excedio el limite %d\n",atoi(id_count));

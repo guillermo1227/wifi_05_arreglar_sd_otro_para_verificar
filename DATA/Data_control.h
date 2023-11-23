@@ -91,7 +91,9 @@ struct tempo_collision{
 
 #define ID_name_beacon "NBC#"
 #define ID_acarreo  "CAR#"
-#define _MSG_TEST "CAR#11:00:33:44:55:66|4\0"
+#define _MSG_TEST   "CAR#11:00:33:44:55:66|4\0"
+#define _MSG_TEST2  "BNM|BC:57:29:00:2E:DB,GEOSF,-95,0"
+
 static char _split_tama_1[] ="#";
 static char _split_tama_2 []="|";
 

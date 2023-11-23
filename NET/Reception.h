@@ -305,7 +305,7 @@ int tcp_gateway( void ){
                       for(int f=0;f<data_send_bt;f++){
                           if(f==0){
       //                    sprintf(data_out,"\nV;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get(&i2c_rtc));
-//                              sprintf(data_out,"\nH;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get_log(&i2c_rtc));
+                              sprintf(data_out,"\nH;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get_log(&i2c_rtc));
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                               memcpy(data_btt[f].mac_bt,NULL,17);
                                 memcpy(data_btt[f].type,NULL,17);

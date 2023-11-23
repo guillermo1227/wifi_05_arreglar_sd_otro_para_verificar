@@ -32,7 +32,6 @@ $(NAME)_COMPONENTS := graphics/u8g \
 GLOBAL_DEFINES += WICED_DISABLE_STDIO
 
 
-
 ####### NEED IT FOR SD CARD###############################
 
 # for SD/MMC card support
