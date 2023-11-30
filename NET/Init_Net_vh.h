@@ -37,6 +37,7 @@ http_header_field_t header_post[3];
 
 #include "API/api_manager.h"
 #include "API/lasec_api.h"
+wiced_result_t result_ip=WICED_SUCCESS;
 
 //#define JSON_MSG "[{\"EventDateFormatted\":\"24/02/2022-13:10:10\",\"LogId\":22,\"ProximityEventDevices\":[,{\"DeviceId\":\"00:00:00:00:00:00\",\"EventType\":2,\"StatusType\":3},]}]"
 #define JSON_MSG  "[{\"EventDateFormatted\":\"24/02/2022-13:10:10\",\"LogId\":22,\"ProximityEventDevices\":[{\"DeviceId\":\"00:00:00:00:00:00\",\"EventType\":2,\"StatusType\":3},{\"DeviceId\":\"00:00:00:00:00:01\",\"EventType\":2,\"StatusType\":2}]}]"
@@ -191,10 +192,18 @@ void net_vehicle(){
 
         }
 
-      wiced_network_set_hostname("SMART FLOW");
+      wiced_network_set_hostname(V_C);
 //      wiced_network_up()
 
-      result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+//      do {
+//          result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+//      }while(result==WICED_ERROR);
+            for(retries = 3; retries != 0; --retries) {
+                result_ip = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+                if((result_ip==WICED_SUCCESS)){
+                    break;
+                }
+            }
 //            result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
 //
 //
@@ -212,6 +221,7 @@ void net_vehicle(){
 //              break;
 //      }
 //
+//      wiced_rtos_delay_microseconds(4000);
       send_request_date();
 
       wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);

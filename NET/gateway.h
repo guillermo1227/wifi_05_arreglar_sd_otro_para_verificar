@@ -47,7 +47,7 @@ uint8_t coun;
 #define TCP_CLIENT_RECEIVE_TIMEOUT_LAMP        3000
 
 #define TCP_CONNECTION_NUMBER_OF_RETRIES  6
-#define TCP_DOWN_NUMBER                   10
+#define TCP_DOWN_NUMBER                   120
 #define TCP_CLIENT_STACK_SIZE   (10000)
 
 #define SIID_C "-SSF-HARDWARE"
@@ -109,6 +109,7 @@ void check_sound_onoff(){
         if(_sound_flag==WICED_TRUE){
             _sound_flag=WICED_FALSE;
 //            set_gpio_menssage(SOUND_ONOFF,silent);
+            printf("\tsound off!!!!\n");
             set_gpio_menssage(RESET_WIFI,1);
         }
     }
@@ -448,6 +449,7 @@ void publishThread(wiced_thread_arg_t arg)
 
     }
 }
+
 void data_bt_send(unsigned char* buffer_in ){
 
 

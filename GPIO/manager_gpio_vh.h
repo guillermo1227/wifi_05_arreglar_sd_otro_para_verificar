@@ -87,6 +87,7 @@ wiced_bool_t button_down_net=WICED_FALSE;
     wiced_bool_t t4;
 
     wiced_bool_t send_data_task=WICED_FALSE;
+    wiced_bool_t connect_server=WICED_FALSE;
 
 uint8_t c_silent=1;
 wiced_bool_t silent=WICED_FALSE;

@@ -1,13 +1,13 @@
 /**********************************************************************************
-* Copyright (C) 2018-2021 LASEC®️ Telecomunicaciones S.A.P.I. de C.V.
+* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 * All rights reserved.
 *
-* This document is the property of LASEC®️ Telecomunicaciones S.A.P.I. de C.V.
+* This document is the property of LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 * It is considered confidential and proprietary.
 *
 * This document may not be reproduced or transmitted in any form,
 * in whole or in part, without the express written permission of
-* LASEC®️ Telecomunicaciones S.A.P.I. de C.V.
+* LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 *
 *********************************************************************************/
 
@@ -44,7 +44,7 @@ extern "C"
 #define CLIENT_AP_PASSPHRASE "Lasec123."
 //#define CLIENT_AP_SSID       "SF-DEMO"
 //#define CLIENT_AP_PASSPHRASE "D3_lasec2020.,"
-#define CLIENT_AP_BSS_TYPE   WICED_BSS_TYPE_INFRASTRUCTURE
+#define CLIENT_AP_BSS_TYPE   WICED_BSS_TYPE_ANY
 #define CLIENT_AP_SECURITY   WICED_SECURITY_WPA2_MIXED_PSK
 #define CLIENT_AP_CHANNEL    1
 #define CLIENT_AP_BAND       WICED_802_11_BAND_2_4GHZ

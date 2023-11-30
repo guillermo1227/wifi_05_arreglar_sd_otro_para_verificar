@@ -166,7 +166,7 @@ void send_request_date()
 }
 
 int tcp_gateway( void ){
-    send_data_task=WICED_TRUE;
+//    send_data_task=WICED_TRUE;
 
     int state=0;
     wiced_mac_t myMac;
@@ -248,12 +248,13 @@ int tcp_gateway( void ){
             }
 
             WPRINT_APP_INFO(("falied 3\n"));
-
+            connect_server=WICED_FALSE;
             wiced_tcp_delete_socket(&socket);
 
         }
         else{
             try_n=0;
+            connect_server=WICED_TRUE;
             WPRINT_APP_INFO(("  e  falied 3\n"));
 
         }
@@ -315,6 +316,9 @@ int tcp_gateway( void ){
 //                                  wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                                   send_data_task=WICED_TRUE;
                               }
+                              else{
+                                  send_data_task=WICED_FALSE;
+                              }
                           }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
@@ -333,6 +337,9 @@ int tcp_gateway( void ){
                               send_data_task=WICED_TRUE;
 //                              return 1;
                            }
+                          else{
+                              send_data_task=WICED_FALSE;
+                          }
                           }
                       }
                       s_count_x=0;
@@ -349,10 +356,18 @@ int tcp_gateway( void ){
 //                             wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                              send_data_task=WICED_TRUE;
                           }
+                         else{
+                             send_data_task=WICED_FALSE;
+                         }
 
                   }
 
               }
+
+
+
+              printf("send task: %d\n",connect_server);
+
 
 //              memset(sendMessage,NULL,80);
               memset(data_out,NULL,1000);
@@ -360,7 +375,6 @@ int tcp_gateway( void ){
         wiced_tcp_stream_flush(&stream);
 
         wiced_rtos_delay_milliseconds( 1500 );
-
         // Delete the stream and socket
         wiced_tcp_stream_deinit(&stream);
         wiced_tcp_delete_socket(&socket);
@@ -377,8 +391,8 @@ int tcp_client_aca( )
 
 //    wiced_rtos_lock_mutex(&pubSubMutex);
 
-    send_data_task=WICED_TRUE;
-    send_data_task=WICED_TRUE;
+//    send_data_task=WICED_TRUE;
+//    send_data_task=WICED_TRUE;
 
 
 
@@ -490,13 +504,14 @@ int tcp_client_aca( )
               }
 
               WPRINT_APP_INFO(("falied 3\n"));
-
+              connect_server=WICED_FALSE;
               wiced_tcp_delete_socket(&socket);
 
           }
           else{
               try_n=0;
               WPRINT_APP_INFO(("  e  falied 3\n"));
+              connect_server=WICED_TRUE;
 
           }
 
@@ -543,6 +558,9 @@ int tcp_client_aca( )
                                      send_data_task=WICED_TRUE;
 
                                   }
+                                 else{
+                                     send_data_task=WICED_FALSE;
+                                 }
                              token = strtok(NULL, s);
                              coun--;
                             }
@@ -552,6 +570,9 @@ int tcp_client_aca( )
                         if(result==WICED_TCPIP_SUCCESS){
                            wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
                            send_data_task=WICED_TRUE;
+                        }
+                        else{
+                            send_data_task=WICED_FALSE;
                         }
                     }
 
@@ -622,11 +643,13 @@ int tcp_client_aca( )
                     state=1;
                 }
             #endif
+             printf("send task: %d\n",connect_server);
 
              wiced_rtos_delay_milliseconds( 2000 );
              wiced_packet_delete(packet);
              wiced_packet_delete(rx_packet);
              wiced_tcp_disconnect(&tcp_client_socket);
+             printf("%d",send_data_task);
 
 //             wiced_rtos_unlock_mutex(&pubSubMutex);
 
@@ -642,8 +665,8 @@ int tcp_client_geo( )
 
 //    wiced_rtos_lock_mutex(&pubSubMutex);
 
-    send_data_task=WICED_TRUE;
-    send_data_task=WICED_TRUE;
+//    send_data_task=WICED_TRUE;
+//    send_data_task=WICED_TRUE;
 
 //   Inicio de localizacion
 
@@ -755,13 +778,15 @@ int tcp_client_geo( )
                  }
 
                  WPRINT_APP_INFO(("falied 3\n"));
-
+                 connect_server=WICED_FALSE;
                  wiced_tcp_delete_socket(&socket);
 
              }
              else{
                  try_n=0;
                  WPRINT_APP_INFO(("  e  falied 3\n"));
+                 connect_server=WICED_TRUE;
+
 
              }
 
@@ -807,6 +832,9 @@ int tcp_client_geo( )
                                         send_data_task=WICED_TRUE;
 
                                      }
+                                    else{
+                                        send_data_task=WICED_FALSE;
+                                    }
                                 token = strtok(NULL, s);
                                 coun--;
                                }
@@ -818,6 +846,10 @@ int tcp_client_geo( )
                                send_data_task=WICED_TRUE;
 
                                }
+                               else{
+                                   send_data_task=WICED_FALSE;
+                               }
+
                          }
 
                                wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
@@ -867,6 +899,7 @@ int tcp_client_geo( )
                 else{
                     state=2;
                 }
+                printf("send task: %d\n",connect_server);
 
              wiced_rtos_delay_milliseconds( 1000 );
 

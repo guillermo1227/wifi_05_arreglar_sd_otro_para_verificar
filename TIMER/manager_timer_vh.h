@@ -374,6 +374,43 @@ static wiced_result_t guardian_V2( void ){
         }
     last_count_l=count_l;
 
+
+    if(result_ip==WICED_ERROR){
+        if((send_data_task==WICED_FALSE)){
+            c_down_TASK=c_down_TASK+1;
+            if((c_down_TASK>=60)){
+                _sound_flag=WICED_TRUE;
+                silent=WICED_TRUE;
+                check_sound_onoff();
+                wiced_rtos_delay_milliseconds(100);
+                wiced_framework_reboot();
+            }
+        }
+
+        else{
+            c_down_TASK=0;
+            send_data_task=WICED_FALSE;
+        }
+
+    }
+    else if((result_ip==WICED_SUCCESS)&&(wiced_network_is_ip_up(WICED_STA_INTERFACE)==WICED_TRUE)){
+        if((connect_server==WICED_FALSE)){
+             c_down_TASK=c_down_TASK+1;
+             if((c_down_TASK>=30)){
+                 _sound_flag=WICED_TRUE;
+                 silent=WICED_TRUE;
+                 check_sound_onoff();
+                 wiced_rtos_delay_milliseconds(100);
+                 wiced_framework_reboot();
+             }
+         }
+
+         else{
+             c_down_TASK=0;
+             connect_server=WICED_FALSE;
+         }
+    }
+
     }
 
 /*************** Timer to publish weather data every 30sec ***************/
@@ -382,8 +419,9 @@ static wiced_result_t guardian_V2( void ){
 void Time_reboot(void* arg){
     wiced_bool_t upnet=WICED_FALSE;
 //                     c_down_net=c_down_net+1;
-//    WPRINT_APP_INFO( ("down %d \r\n",c_down_net) );
-
+    WPRINT_APP_INFO( ("down %d \r\n",c_down_TASK) );
+//    WPRINT_APP_INFO( ("leave %d \r\n",c_down_net) );
+    printf("%d\n",wiced_network_is_ip_up(WICED_STA_INTERFACE));
      if(main_c==3){
          upnet=wiced_network_is_up(WICED_STA_INTERFACE);
          if(upnet==WICED_FALSE){
@@ -399,17 +437,6 @@ void Time_reboot(void* arg){
 //             platform_gpio_output_high(Sat_WiFi);
 
              c_down_net=0;
-             if((send_data_task==WICED_FALSE)){
-                 c_down_TASK=c_down_TASK+1;
-                 if((c_down_TASK>=15)){
-                     wiced_framework_reboot();
-                 }
-             }
-
-             else{
-                 c_down_TASK=0;
-                 send_data_task=WICED_FALSE;
-             }
 
 //             wiced_gpio_output_high(Sat_WiFi);
 //             wiced_gpio_output_high(Sat_WiFi);
@@ -417,6 +444,8 @@ void Time_reboot(void* arg){
 //             blink_vehicle();
 
          }
+
+
      }
 
      wiced_bool_t on_off_b;
