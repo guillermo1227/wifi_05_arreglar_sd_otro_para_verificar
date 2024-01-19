@@ -17,6 +17,7 @@
 #define TCP_NUMBER      1
 #define GEOLOC
 
+uint8_t count_storage_send=1;
 uint8_t count_tcp=0;
 uint8_t count_stream=0;
 /*************** Tcp Configurator Thread ***************/
@@ -30,7 +31,7 @@ void Main_Thread_TCP(wiced_thread_arg_t arg){
     while (1){
         wiced_rtos_lock_mutex(&pubSubMutex);
 
-//        printf("%d\n",key);
+        printf("PRINTED KEY %d\n",key);
 
 
         switch(key){
@@ -320,27 +321,48 @@ int tcp_gateway( void ){
                                   send_data_task=WICED_FALSE;
                               }
                           }
+                          else if(f==1){
+                              if((strlen(log_accarreos.mac_bt)!=0)){
+//                                  wiced_rtos_delay_microseconds( 10 );
+                                  strcpy(log_accarreos.id,"900");
+                                  sprintf(data_out,"\n%s\r\n",data_to_json_acarreo(&log_accarreos,s_Mac_W));
+                                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                                  if(result==WICED_TCPIP_SUCCESS){
+                                      wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+                                      send_data_task=WICED_TRUE;
+                                  }
+                                  else{
+                                      send_data_task=WICED_FALSE;
+                                  }
+                                  memset(log_accarreos.date,NULL,12);
+                                  memset(log_accarreos.mac_bt,NULL,19);
+                                  memset(log_accarreos.name,NULL,18);
+                                  memset(log_accarreos.id,NULL,3);
+                                  memset(log_accarreos.time_start,NULL,12);
+                              }
+                          }
                           else{
-                          wiced_rtos_delay_microseconds( 10 );
-//                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
-//                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
-                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
+                              wiced_rtos_delay_microseconds( 10 );
+//                           sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
+//                              sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
+                              sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
 
                                           memcpy(data_btt[f].mac_bt,NULL,17);
                                           memcpy(data_btt[f].type,NULL,17);
                                           memcpy(data_btt[f].rssi,NULL,4);
                                           memcpy(data_btt[f].fallen,NULL,2);
 
-                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-                          if(result==WICED_TCPIP_SUCCESS){
+                                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                              if(result==WICED_TCPIP_SUCCESS){
 //                              wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-                              send_data_task=WICED_TRUE;
+                                  send_data_task=WICED_TRUE;
 //                              return 1;
-                           }
-                          else{
+                               }
+                              else{
                               send_data_task=WICED_FALSE;
+                              }
                           }
-                          }
+
                       }
                       s_count_x=0;
                       data_send_bt=0;
@@ -359,6 +381,29 @@ int tcp_gateway( void ){
                          else{
                              send_data_task=WICED_FALSE;
                          }
+                         if((strlen(log_accarreos.mac_bt)!=0)){
+                             wiced_rtos_delay_microseconds( 10 );
+
+                             strcpy(log_accarreos.id,"900");
+                             log_accarreos.id[strlen("900")]='\0';
+
+                             sprintf(data_out,"\n%s\r\n",data_to_json_acarreo(&log_accarreos,s_Mac_W));
+                             result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+
+                             if(result==WICED_TCPIP_SUCCESS){
+                                 wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+                                 send_data_task=WICED_TRUE;
+                             }
+                             else{
+                                 send_data_task=WICED_FALSE;
+                             }
+                             memset(log_accarreos.date,NULL,12);
+                             memset(log_accarreos.mac_bt,NULL,19);
+                             memset(log_accarreos.name,NULL,18);
+                             memset(log_accarreos.id,NULL,3);
+                             memset(log_accarreos.time_start,NULL,12);
+                         }
+
 
                   }
 
@@ -378,7 +423,16 @@ int tcp_gateway( void ){
         // Delete the stream and socket
         wiced_tcp_stream_deinit(&stream);
         wiced_tcp_delete_socket(&socket);
-        return 1;
+
+        if(count_storage_send>=4){
+//           state=3;
+           return 3;
+        }
+        else{
+            return 1;
+        }
+
+
 
 
 }
@@ -566,19 +620,23 @@ int tcp_client_aca( )
                             }
                     }
                     else{
-                        result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
+                        result=wiced_tcp_stream_write(&stream, NO_DATA_A, strlen(NO_DATA_A));
                         if(result==WICED_TCPIP_SUCCESS){
-                           wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
+                           wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA_A,strlen(NO_DATA_A));
                            send_data_task=WICED_TRUE;
                         }
                         else{
                             send_data_task=WICED_FALSE;
                         }
                     }
+                    count_storage_send++;
+
+
 
                             wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
 
                           memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+//                          free(filebuf);
 
                           if(coun<=2){
   //                            sent_file_flag=WICED_FALSE;
@@ -840,9 +898,9 @@ int tcp_client_geo( )
                                }
                        }
                        else{
-                           result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
+                           result=wiced_tcp_stream_write(&stream, NO_DATA_L, strlen(NO_DATA_L));
                            if(result==WICED_TCPIP_SUCCESS){
-                               wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
+                               wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA_L,strlen(NO_DATA_L));
                                send_data_task=WICED_TRUE;
 
                                }
@@ -851,10 +909,12 @@ int tcp_client_geo( )
                                }
 
                          }
+                       count_storage_send++;
 
                                wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
 
                              memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+//                             free(filebuf);
 
                              if(coun<=2){
      //                            sent_file_flag=WICED_FALSE;
@@ -899,6 +959,9 @@ int tcp_client_geo( )
                 else{
                     state=2;
                 }
+
+
+
                 printf("send task: %d\n",connect_server);
 
              wiced_rtos_delay_milliseconds( 1000 );

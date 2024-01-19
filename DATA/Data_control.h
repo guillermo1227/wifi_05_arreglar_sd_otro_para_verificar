@@ -112,7 +112,7 @@ struct Acarreos
     unsigned char time_start[12];
     unsigned char date[12];
     unsigned char name[18];
-    unsigned char id[3];
+    unsigned char id[4];
 
 };
 

@@ -21,8 +21,10 @@ wiced_bool_t hide_on;
 
 
 #define lasec         "----------------Lasec Telecomunicaciones, S.A.P.I. De C.V.---------------- \r\n"
-#define VERSION     "Smart Vehiculo 3.0 producion y localizacion version 3.9.42\r\n"
-#define V_C         "TV:3.9.42_P&A_C"
+#define VERSION     "Smart Vehiculo 3.0 producion y localizacion version 3.10.1_P&A_C\r\n"
+#define V_C         "TV:3.10.1_P"
+#define V_h         "T3.10.1.P"
+
 
 //version 3.3.4         contine la activacion de sonido mejora en la pronta busqueda de red y actlizacion en funciomaneiento bt
 //version 3.3.4.18      Version en ingles
@@ -112,7 +114,8 @@ wiced_bool_t hide_on;
 #define HC_ALERT_HC         "HCW\r\n"
 #define HC_G_ALERT          "\n   * * * ACELERACION REPENTINA * * *\r\n"
 #define CENTER              "CENTRO DE DESPACHO\r\n"
-#define NO_DATA             "\nNO DATA\r\n"
+#define NO_DATA_L             "\nNO DATA LOCATION\r\n"
+#define NO_DATA_A             "\nNO DATA HAULGE\r\n"
 
 #define ZOM_BT      "SOM\r\n"
 

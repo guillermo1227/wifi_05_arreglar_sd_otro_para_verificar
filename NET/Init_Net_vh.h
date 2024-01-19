@@ -128,6 +128,7 @@ void end_point_post(){
         http_client_deinit( &client_post );
         memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
         memset(tk,NULL,LOCAL_BUFFER_SIZE);
+//        free(filebuf);
 
         wiced_rtos_delay_milliseconds(200);
           if(!connected_g) {
@@ -192,7 +193,7 @@ void net_vehicle(){
 
         }
 
-      wiced_network_set_hostname(V_C);
+      wiced_network_set_hostname(V_h);
 //      wiced_network_up()
 
 //      do {

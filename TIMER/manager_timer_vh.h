@@ -114,7 +114,7 @@ static wiced_result_t Acarreo_V( void ){
 
 //
 //            memset(id_count,'1',2);
-    if(strlen(log_accarreos.mac_bt)!=0){
+    if((strlen(log_accarreos.mac_bt)!=0)&&(!wiced_network_is_ip_up(WICED_STA_INTERFACE))){
         wiced_filesystem_unmount(&fs_handle);
         init_sd(&fs_handle);
 
@@ -125,6 +125,7 @@ static wiced_result_t Acarreo_V( void ){
 
         printf("%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
         memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+//        free(filebuf);
 
         if(atoi(id_count)<=limit_save_file){
             write_data_acarreo(ACARREO_ROOT,date_get(&i2c_rtc),&log_accarreos,s_Mac_W,&fs_handle);
@@ -191,6 +192,7 @@ static wiced_result_t Collision_V( void ){
                    strcpy( bt_joined.id,id_count_collision);
 
                    memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+//                   free(filebuf);
 
 
                    if(atoi(id_count_collision)<=limit_save_file){
@@ -265,6 +267,7 @@ static wiced_result_t Beacon_V( void ){
                 read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
                 strcpy(master_data.id,id_count);
                 memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+//                free(filebuf);
 
 
 //                trabjar desde aquii con las funciones de condicional de guardado
@@ -448,35 +451,35 @@ void Time_reboot(void* arg){
 
      }
 
-     wiced_bool_t on_off_b;
-     wiced_gpio_input_get_bool(GPIO_ON_OF,&on_off_b);
+//     wiced_bool_t on_off_b;
+//     wiced_gpio_input_get_bool(GPIO_ON_OF,&on_off_b);
 
-     if(on_off_b==WICED_FALSE){
-         c_silent=c_silent+1;
-         if((c_silent==2)&&(silent==WICED_FALSE)){
-             _sound_flag=WICED_TRUE;
-             silent=WICED_TRUE;
-             frist_seen_silent=WICED_TRUE;
-             wiced_rtos_set_semaphore(&displaySemaphore);
-
-         }
-         else if((c_silent==2)&&(silent==WICED_TRUE)){
-             silent=WICED_FALSE;
-             frist_seen_silent=WICED_TRUE;
-             _sound_flag=WICED_TRUE;
-             wiced_rtos_set_semaphore(&displaySemaphore);
-
-         }
-     }
-     else{
-         c_silent=0;
-     }
-
-
-     if((tcp_down_connect==WICED_TRUE)&&(reg_incoming==WICED_FALSE)){
-
-         wiced_framework_reboot();
-     }
+//     if(on_off_b==WICED_FALSE){
+//         c_silent=c_silent+1;
+//         if((c_silent==2)&&(silent==WICED_FALSE)){
+//             _sound_flag=WICED_TRUE;
+//             silent=WICED_TRUE;
+//             frist_seen_silent=WICED_TRUE;
+//             wiced_rtos_set_semaphore(&displaySemaphore);
+//
+//         }
+//         else if((c_silent==2)&&(silent==WICED_TRUE)){
+//             silent=WICED_FALSE;
+//             frist_seen_silent=WICED_TRUE;
+//             _sound_flag=WICED_TRUE;
+//             wiced_rtos_set_semaphore(&displaySemaphore);
+//
+//         }
+//     }
+//     else{
+//         c_silent=0;
+//     }
+//
+//
+//     if((tcp_down_connect==WICED_TRUE)&&(reg_incoming==WICED_FALSE)){
+//
+//         wiced_framework_reboot();
+//     }
 
 }
 

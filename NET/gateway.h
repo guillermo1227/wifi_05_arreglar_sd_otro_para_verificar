@@ -350,6 +350,7 @@ void publishThread(wiced_thread_arg_t arg)
                           wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
 
                         memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+//                        free(filebuf);
 
                         if(coun<=2){
 //                            sent_file_flag=WICED_FALSE;

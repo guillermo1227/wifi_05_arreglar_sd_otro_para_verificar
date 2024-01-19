@@ -185,12 +185,12 @@ void application_start( ){
 
 ////
 //
-//    Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
-//    Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
-//    Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
-//    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-//    Set_GATEWAY("-G10.90.120.1",16,WICED_UART_3);
-//    Set_IP("-C10.90.120.41",16,WICED_UART_3);
+    Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
+    Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
+    Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
+    Set_GATEWAY("-G10.90.120.1",16,WICED_UART_3);
+    Set_IP("-C10.90.120.41",16,WICED_UART_3);
 
 //
 ////
@@ -210,13 +210,13 @@ void application_start( ){
 //    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
 //    Set_IP("-C10.174.108.60",16,WICED_UART_3);
 //    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-////
+//////
 //
 //        Set_SSID("-SOP_NetCode5663",22,WICED_UART_3);
 //        Set_KEY("-KCr1pT70gr@fyeAr",22,WICED_UART_3);
 //        Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
 //
-//        Set_config();
+        Set_config();
 ////
 //////
 //

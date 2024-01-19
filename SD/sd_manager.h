@@ -20,7 +20,7 @@
 #define DIRECTORY_SEPARATOR_CHR '/'
 /* reduce FILE_BUFFER_SIZE or increse APPLICATION_STACK_SIZE in mk file,
    if you meet stack overflow */
-#define FILE_BUFFER_SIZE        (65536)*2*2
+#define FILE_BUFFER_SIZE        (64*1024*2)
 #define SRC_DIR                 "/src"
 //#define TGT_DIR                 "/tgt"
 #define PROGRESS_UNIT           (50)
@@ -259,7 +259,6 @@ void write_data(char* TGT_DIR,const char* filename,struct location_data dataX,wi
 
 
 }
-
 
 void write_data_acarreo(char* TGT_DIR,const char* filename,struct Acarreos *dataX,char * Vehi_Rep,wiced_filesystem_t* fs_handle){
     wiced_result_t result;

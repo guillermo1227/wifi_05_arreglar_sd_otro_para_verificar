@@ -29,7 +29,7 @@ $(NAME)_COMPONENTS := graphics/u8g \
     					protocols/MQTT
     					
     					
-GLOBAL_DEFINES += WICED_DISABLE_STDIO
+#GLOBAL_DEFINES += WICED_DISABLE_STDIO
 
 
 ####### NEED IT FOR SD CARD###############################
@@ -39,7 +39,7 @@ WICED_SDMMC_SUPPORT := yes
 
 # default stack size was WICED_DEFAULT_APPLICATION_STACK_SIZE, 6K
 # needs big stack size for deep directory processing
-GLOBAL_DEFINES += APPLICATION_STACK_SIZE=1024*1024
+GLOBAL_DEFINES += APPLICATION_STACK_SIZE=1024*256
 
 # For exFAT support, use filesystems/FileX/exFAT (for licensees only)
 $(NAME)_COMPONENTS += filesystems/FileX/default
