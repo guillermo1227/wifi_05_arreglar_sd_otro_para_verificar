@@ -47,7 +47,7 @@ uint8_t coun;
 #define TCP_CLIENT_RECEIVE_TIMEOUT_LAMP        3000
 
 #define TCP_CONNECTION_NUMBER_OF_RETRIES  6
-#define TCP_DOWN_NUMBER                   10
+#define TCP_DOWN_NUMBER                   30  //60
 #define TCP_CLIENT_STACK_SIZE   (10000)
 
 #define SIID_C "-SSF-HARDWARE"
@@ -250,7 +250,7 @@ void publishThread(wiced_thread_arg_t arg)
             wiced_tcp_delete_socket(&socket); /* Delete socket and return*/
         }
         else{
-            try_n=0;
+            //try_n=0;
             WPRINT_APP_INFO((" e falied 2\n"));
 
         }

@@ -37,6 +37,8 @@ http_header_field_t header_post[3];
 
 #include "API/api_manager.h"
 #include "API/lasec_api.h"
+bool ip_is_up = false;
+wiced_result_t      result_ip= WICED_SUCCESS;
 
 //#define JSON_MSG "[{\"EventDateFormatted\":\"24/02/2022-13:10:10\",\"LogId\":22,\"ProximityEventDevices\":[,{\"DeviceId\":\"00:00:00:00:00:00\",\"EventType\":2,\"StatusType\":3},]}]"
 #define JSON_MSG  "[{\"EventDateFormatted\":\"24/02/2022-13:10:10\",\"LogId\":22,\"ProximityEventDevices\":[{\"DeviceId\":\"00:00:00:00:00:00\",\"EventType\":2,\"StatusType\":3},{\"DeviceId\":\"00:00:00:00:00:01\",\"EventType\":2,\"StatusType\":2}]}]"
@@ -174,44 +176,41 @@ void net_vehicle(){
 
 //      result = wiced_network_up(WICED_CONFIG_INTERFACE, WICED_USE_EXTERNAL_DHCP_SERVER,&device_init_settings);
 
-      for ( retries = LASEC_JOIN_RETRY_ATTEMPTS; retries != 0; --retries )
-        {
-     wiced_dct_read_lock( (void**) &ap, WICED_FALSE, DCT_WIFI_CONFIG_SECTION, (uint32_t) ( OFFSETOF(platform_dct_wifi_config_t,stored_ap_list) + a * sizeof(wiced_config_ap_entry_t) ), sizeof(wiced_config_ap_entry_t) ) ;
-                  if ( ap->details.SSID.length != 0 )
-                  {
-                      result=wiced_join_ap_specific( &ap->details, ap->security_key_length, ap->security_key );
-                      wiced_dct_read_unlock( (wiced_config_ap_entry_t*) ap, WICED_FALSE );
+      while(!ip_is_up){
+
+                    for ( retries = LASEC_JOIN_RETRY_ATTEMPTS; retries != 0; --retries )
+                    {
+                        wiced_dct_read_lock( (void**) &ap, WICED_FALSE, DCT_WIFI_CONFIG_SECTION, (uint32_t) ( OFFSETOF(platform_dct_wifi_config_t,stored_ap_list) + a * sizeof(wiced_config_ap_entry_t) ), sizeof(wiced_config_ap_entry_t) ) ;
+                        if ( ap->details.SSID.length != 0 )
+                        {
+                            result=wiced_join_ap_specific( &ap->details, ap->security_key_length, ap->security_key );
+                            wiced_dct_read_unlock( (wiced_config_ap_entry_t*) ap, WICED_FALSE );
+
+                        }
+                        if ( result == WICED_SUCCESS )
+                        {
+                            printf("\n encontro un SSID QUE NO ESTA SOLO Y LA CONTRASEÑA ES LA MISMA \n");
+                            break;
+                        }
+
+                    }
+
+                    wiced_network_set_hostname(V_h);    /* Host name */
 
 
-                  }
-          if ( result == WICED_SUCCESS )
-          {
-             break;
-          }
+                    result_ip = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+                    if((result_ip==WICED_SUCCESS)){
+                        printf("\n ** Asignacion de IP correcta ** \n");
+                        ip_is_up=true;
+                        //break;
+                        }
+                    else
+                    {
+                        wiced_leave_ap(interface);
 
-        }
+                    }
 
-      wiced_network_set_hostname("SMART FLOW");
-//      wiced_network_up()
-
-      result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
-//            result = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
-//
-//
-
-
-//        INITIALISER_IPV4_ADDRESS(ip_address, MAKE_IPV4_ADDRESS(rs[0],rs[1],rs[2],rs[3]) )
-
-
-
-//      init_endpoint();
-//      switch(wiced_network_is_ip_up(WICED_STA_INTERFACE)){
-//          case 1:
-//              end_point_post();
-
-//              break;
-//      }
-//
+                }
       send_request_date();
 
       wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);

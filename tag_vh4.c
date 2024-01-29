@@ -153,15 +153,15 @@ void application_start( ){
 
 
 //    -----version resto de minas----------------------------------------------------------------------
-        if(get_gpio_menssage(RESET_WIFI)==1){
-    //        set_gpio_menssage(RESET_WIFI,0);
-    //        silent=get_gpio_menssage(SOUND_ONOFF);
-    //        set_gpio_menssage(SOUND_ONOFF,0);
-                silent=WICED_TRUE;
-        }
+//        if(get_gpio_menssage(RESET_WIFI)==1){
+//    //        set_gpio_menssage(RESET_WIFI,0);
+//    //        silent=get_gpio_menssage(SOUND_ONOFF);
+//    //        set_gpio_menssage(SOUND_ONOFF,0);
+//                silent=WICED_TRUE;
+//        }
 
     //-----version velardena descomentar linea de silent-----------------------------------------------------
-//    silent=get_gpio_menssage(SOUND_ONOFF);
+    silent=get_gpio_menssage(SOUND_ONOFF);
 //    silent=WICED_TRUE;
 //    silent=WIC
 //    printf("antes %s \n",bt_joined.mac_lamp);
@@ -189,9 +189,9 @@ void application_start( ){
 //    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
 //    Set_IP("-C10.174.107.62",16,WICED_UART_3);
 ////
-//    Set_SSID("-SSF-DEMO",13,WICED_UART_3);
-//    Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
-//    Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
+    Set_SSID("-SSF-DEMO",13,WICED_UART_3);
+    Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
+    Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
 //    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
 //    Set_IP("-C10.174.108.60",16,WICED_UART_3);
 //    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
@@ -209,13 +209,13 @@ void application_start( ){
 //    Set_GATEWAY("-G10.117.103.254",16,WICED_UART_3);
 
 
-//        Set_SSID("-STracking-SD",13,WICED_UART_3);
-//        Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
-//        Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
+        //Set_SSID("-STracking-SD",13,WICED_UART_3);
+        //Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
+        //Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
 //        Set_MASK("-M255.255.252.0",15,WICED_UART_3);
 //        Set_IP("-C10.178.55.50",16,WICED_UART_3);
 //        Set_GATEWAY("-G10.178.55.254",16,WICED_UART_3);
-//        Set_config();
+        Set_config();
 //
 
 

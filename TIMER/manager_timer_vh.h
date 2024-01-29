@@ -374,6 +374,13 @@ static wiced_result_t guardian_V2( void ){
         }
     last_count_l=count_l;
 
+//    if(_flag_driver == WICED_TRUE)
+//            {
+//            printf("\n *** Sound driver *** \n");
+//            buzz(200,2);
+//            _flag_driver = WICED_FALSE;
+//            }
+
     }
 
 /*************** Timer to publish weather data every 30sec ***************/
@@ -398,23 +405,24 @@ void Time_reboot(void* arg){
 //             wiced_gpio_output_high(Sat_WiFi);
 //             platform_gpio_output_high(Sat_WiFi);
 
-             c_down_net=0;
-             if((send_data_task==WICED_FALSE)){
-                 c_down_TASK=c_down_TASK+1;
-                 if((c_down_TASK>=15)){
-                     wiced_framework_reboot();
-                 }
-             }
-
-             else{
-                 c_down_TASK=0;
-                 send_data_task=WICED_FALSE;
-             }
+//             c_down_net=0;
+//             if((send_data_task==WICED_FALSE)){
+//                 c_down_TASK=c_down_TASK+1;
+//                 if((c_down_TASK>=200)){   //
+//                     wiced_framework_reboot();
+//                 }
+//             }
+//
+//             else{
+//                 c_down_TASK=0;
+//                 send_data_task=WICED_FALSE;
+//             }
 
 //             wiced_gpio_output_high(Sat_WiFi);
 //             wiced_gpio_output_high(Sat_WiFi);
 //             platform_gpio_output_high(Sat_WiFi);
 //             blink_vehicle();
+
 
          }
      }

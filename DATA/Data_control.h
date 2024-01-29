@@ -26,6 +26,7 @@ wiced_bool_t _B_transit=WICED_FALSE;
 wiced_bool_t fallen_f =WICED_FALSE;
 wiced_bool_t risk_z=WICED_FALSE;
 wiced_bool_t _flag_aca=WICED_FALSE;
+wiced_bool_t _flag_driver = WICED_FALSE; /* Variable used to indicate the sound of driver */
 unsigned char _lateral_veh[2];
 unsigned char _lateral_lam[2];
 
@@ -93,6 +94,8 @@ struct tempo_collision{
 #define ID_acarreo  "CAR#"
 #define _MSG_TEST   "CAR#11:00:33:44:55:66|4\0"
 #define _MSG_TEST2  "BNM|BC:57:29:00:2E:DB,GEOSF,-95,0"
+#define _N_KDV      "KDV"
+#define _NONE       "NONE"
 
 static char _split_tama_1[] ="#";
 static char _split_tama_2 []="|";
@@ -116,6 +119,7 @@ struct Acarreos
 
 };
 
+//char mac_bt_D[19]; /* Variable used in the driver identificator */
 void tamagochi(char *input,struct Acarreos *acareo){
     int x=0;
     unsigned char str_split[128];
@@ -207,6 +211,46 @@ void tamagochi(char *input,struct Acarreos *acareo){
         }
 
     }
+//    else if(strstr(input,_N_KDV))
+//        {
+//            memcpy(str_split,input,strlen(input));
+//            //printf("\n Copio %s\n",str_split);
+//
+//            char * first_split;
+//
+//            first_split=strtok(str_split,_split_tama_2);
+//
+//            while(first_split !=NULL)
+//            {
+//                switch(x)
+//                {
+//                case 0:
+//                    /* No hago nada */
+//                    break;
+//                case 1:
+//                    if(strstr(input ,_NONE))
+//                    {
+//                        memset(mac_bt_D,'\0',strlen(mac_bt_D));
+//                    }
+//                    else
+//                    {
+//                        memset(mac_bt_D,'\0',strlen(mac_bt_D));
+//                        //memcpy(mac_bt_D, first_split,strlen(first_split));
+//                        memcpy(mac_bt_D, first_split,strlen(first_split));
+//                        mac_bt_D[strlen(first_split)]='\0';
+//                        printf("\n %s \n",mac_bt_D);
+//                    }
+//
+//                    break;
+//                    default:
+//                        break;
+//                }
+//                first_split = strtok(NULL,_split_tama_2);
+//                x++;
+//            }
+//
+//                _flag_driver = WICED_TRUE;
+//          }
     wiced_rtos_set_semaphore(&displaySemaphore);
 
 }
@@ -426,7 +470,7 @@ char* data_to_json_collision(struct colliosn_mac_t *data  ,struct tempo_collisio
 
 char* data_to_json_acarreo(struct Acarreos * main,char * Vehi_Rep){
     char* res;
-    res=malloc(sizeof(char)*150);
+    res=malloc(sizeof(char)*200);
 
     sprintf(res,
               "{\"EventId\":\"%s\",\"EventDate\":\"%s-%s\",\"MACBeacon\":\"%s\",\"MACOperator\":\"\",\"MACVehicle\":\"%s\",\"Status\":%d}\n"

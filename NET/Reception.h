@@ -199,7 +199,7 @@ int tcp_gateway( void ){
 //                     set_name();
                  tcp_down_connect=WICED_TRUE;
 
-//               wiced_framework_reboot();
+               wiced_framework_reboot();
             }
 
         }
@@ -220,7 +220,7 @@ int tcp_gateway( void ){
                  wiced_rtos_delay_milliseconds(100);
                  tcp_down_connect=WICED_TRUE;
 
-//               wiced_framework_reboot();
+               wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 2\n"));
@@ -228,7 +228,7 @@ int tcp_gateway( void ){
             wiced_tcp_delete_socket(&socket); /* Delete socket and return*/
         }
         else{
-            try_n=0;
+            //try_n=0;
             WPRINT_APP_INFO((" e falied 2\n"));
 
         }
@@ -244,7 +244,7 @@ int tcp_gateway( void ){
 
                  tcp_down_connect=WICED_TRUE;
 
-//               wiced_framework_reboot();
+               wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 3\n"));
@@ -461,7 +461,7 @@ int tcp_client_aca( )
               wiced_tcp_delete_socket(&socket); /* Delete socket and return*/
           }
           else{
-              try_n=0;
+              //try_n=0;
               WPRINT_APP_INFO((" e falied 2\n"));
 
           }
@@ -726,7 +726,7 @@ int tcp_client_geo( )
                  wiced_tcp_delete_socket(&socket); /* Delete socket and return*/
              }
              else{
-                 try_n=0;
+                 //try_n=0;
                  WPRINT_APP_INFO((" e falied 2\n"));
 
              }

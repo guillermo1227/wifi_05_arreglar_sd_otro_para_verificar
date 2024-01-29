@@ -216,7 +216,7 @@ void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,cha
 
 
      upnet=wiced_network_is_up(WICED_STA_INTERFACE);
-     if(upnet==WICED_TRUE){
+     if((upnet==WICED_TRUE)&&(wiced_network_is_ip_up(WICED_STA_INTERFACE)==WICED_TRUE)){
          u8g_SetFont(u8g, u8g_font_gdr10);
          u8g_SetFontPosTop(u8g);
 

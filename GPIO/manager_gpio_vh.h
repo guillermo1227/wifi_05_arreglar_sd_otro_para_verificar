@@ -246,6 +246,31 @@ void buzz(uint8_t time,uint8_t prox){
 //        }
 
     }
+    else if(prox==2)
+        {
+            wiced_gpio_output_low(PWM3);        /* Primero lo callo*/
+            wiced_gpio_output_low(PWM2);
+            wiced_rtos_delay_milliseconds( 50);  /* Inicio sonoro */
+            wiced_gpio_output_high(PWM3);
+            wiced_gpio_output_high(PWM2);
+            wiced_rtos_delay_milliseconds( time+50);
+            wiced_gpio_output_low(PWM3);
+            wiced_gpio_output_low(PWM2);
+            wiced_rtos_delay_milliseconds( time);
+            wiced_gpio_output_high(PWM3);
+            wiced_gpio_output_high(PWM2);
+            wiced_rtos_delay_milliseconds( time-100);
+            wiced_gpio_output_low(PWM3);
+            wiced_gpio_output_low(PWM2);
+            wiced_rtos_delay_milliseconds(time-100);
+
+            wiced_gpio_output_high(PWM3);
+            wiced_gpio_output_high(PWM2);
+            wiced_rtos_delay_milliseconds( time-100);
+            wiced_gpio_output_low(PWM3);
+            wiced_gpio_output_low(PWM2);
+            wiced_rtos_delay_milliseconds(time-100);
+        }
 
 //        wiced_rtos_delay_milliseconds( time);
         WPRINT_APP_INFO( ("Sound buzz %d\r\n",time) );
