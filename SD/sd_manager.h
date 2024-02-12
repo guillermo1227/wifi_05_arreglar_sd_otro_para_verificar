@@ -94,6 +94,7 @@ void init_sd(wiced_filesystem_t* fs_handle){
 //          printf( "\nSD card NOT supported\n" );
 //          }
 //while (result!=WICED_SUCCESS){
+
           result = wiced_filesystem_init();
           if ( result != WICED_SUCCESS  )
           {

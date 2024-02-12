@@ -40,11 +40,13 @@ void init_rtc(wiced_i2c_device_t * i2c_device_rtc){
 
        }
 
-       /* Probe I2C bus for temperature sensor */
-       if( wiced_i2c_probe_device( i2c_device_rtc, NUM_I2C_MESSAGE_RETRIES ) != WICED_TRUE )
-       {
+       /* Estaba descomentado, pero comente porque no hace nada */
+//       /* Probe I2C bus for temperature sensor */
+//       if( wiced_i2c_probe_device( i2c_device_rtc, NUM_I2C_MESSAGE_RETRIES ) != WICED_TRUE )
+//       {
+//
+//       }
 
-       }
 }
 
 
