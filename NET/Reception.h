@@ -53,9 +53,7 @@ void Main_Thread_TCP(wiced_thread_arg_t arg){
                 break;
              #endif
 
-
         }
-
 
         wiced_rtos_unlock_mutex(&pubSubMutex);
 
@@ -166,6 +164,7 @@ void send_request_date()
 }
 
 int tcp_gateway( void ){
+    printf("\n *** Caso 3 *** \n");
     send_data_task=WICED_TRUE;
 
     int state=0;
@@ -316,6 +315,26 @@ int tcp_gateway( void ){
                                   send_data_task=WICED_TRUE;
                               }
                           }
+//                          else if(f==1){
+//                              if((strlen(log_accarreos.mac_bt)!=0)){
+//                          //                                wiced_rtos_delay_microseconds( 10 );
+//                                  strcpy(log_accarreos.id,"900");
+//                                  sprintf(data_out,"\n%s\r\n",data_to_json_acarreo(&log_accarreos,s_Mac_W));
+//                                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                                  if(result==WICED_TCPIP_SUCCESS){
+//                                      wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+//                                      send_data_task=WICED_TRUE;
+//                                  }
+//                                  else{
+//                                      send_data_task=WICED_FALSE;
+//                                  }
+//                                  memset(log_accarreos.date,NULL,12);
+//                                  memset(log_accarreos.mac_bt,NULL,19);
+//                                  memset(log_accarreos.name,NULL,18);
+//                                  memset(log_accarreos.id,NULL,3);
+//                                  memset(log_accarreos.time_start,NULL,12);
+//                              }
+//                          }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
@@ -354,7 +373,6 @@ int tcp_gateway( void ){
 
               }
 
-//              memset(sendMessage,NULL,80);
               memset(data_out,NULL,1000);
 //              key=1;
         wiced_tcp_stream_flush(&stream);
@@ -371,6 +389,7 @@ int tcp_gateway( void ){
 
 int tcp_client_aca( )
 {
+    printf("\n*** Caso 1 de hvt ***\n");
     flag_time_set_PUBLISH=WICED_TRUE;
 
     uint8_t state=0;
@@ -533,15 +552,16 @@ int tcp_client_aca( )
                     if(coun!=0){
 
                         while( token != NULL ) {
-                            //            printf( " >>>>>  %s\n", token );
+                                        //printf( " >>>>>  %s\n", token );
                               wiced_rtos_delay_microseconds( 10 );
+                              //printf("\n Mando algo \n");
                               sprintf(data_out,"\nHVT;%s\r\n",token);
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
 
                                  if(result==WICED_TCPIP_SUCCESS){
 //                                     wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                                      send_data_task=WICED_TRUE;
-
+                                     printf( " >>>>>  %s\n", token );
                                   }
                              token = strtok(NULL, s);
                              coun--;
@@ -638,6 +658,7 @@ int tcp_client_aca( )
 
 int tcp_client_geo( )
 {
+    printf("\n *** Caso 2 *** \n");
     uint8_t state=0;
 
 //    wiced_rtos_lock_mutex(&pubSubMutex);

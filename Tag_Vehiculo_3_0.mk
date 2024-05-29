@@ -30,7 +30,8 @@ $(NAME)_COMPONENTS := graphics/u8g \
     					
     					
 GLOBAL_DEFINES += WICED_DISABLE_STDIO
-
+## NEED IT FOR WATCHDOG ##
+##GLOBAL_DEFINES := APPLICATION_WATCHDOG_TIMEOUT_SECONDS=9
 
 ####### NEED IT FOR SD CARD###############################
 

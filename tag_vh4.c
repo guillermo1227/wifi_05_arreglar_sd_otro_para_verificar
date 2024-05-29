@@ -10,8 +10,14 @@
 * LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 *
 *********************************************************************************/
-/* Codigo enviado a tlayoltita con fernando, cambio en la conexion de wifi con do while, se
- * comento un if en tv_send_1 */
+/* Codigo probado con luis hasta ahora la version mas estable la cual cuenta con las siguientes pruebas y caracteristicas
+ *
+ * --> Si no cuenta con conexion a internet se reinicia a el 1:30 segudnso aprox
+ * --> Pocas consultas en la memoria flash al igual que su liberacion, pruebas de reinicos pasada con exito
+ * --> Cuanta con acarreos
+ * --> Baudios 230400
+ * --> Conexion por IP estatica, la cual necesita gatway, mascara e ip statica
+ * --> Si se reinicia vuelve a sonar */
 
 
 #include "wiced.h"
@@ -61,6 +67,11 @@ wiced_i2c_device_t i2c_rtc;
 wiced_result_t  flag_time_set=WICED_TRUE;
 wiced_result_t  flag_time_set_PUBLISH=WICED_FALSE;
 
+/******************************************************
+ *               Variable Definitions watchdog
+ ******************************************************/
+wiced_system_monitor_t my_thread_monitor;
+/* ****************************************************/
 
 #include "RTC/rtc_manager.h"
 #include "SD/sd_manager.h"
@@ -121,10 +132,10 @@ void application_start( ){
 
 //    wwd_wifi_set_mcs_rate (WICED_STA_INTERFACE, 0, WICED_TRUE);
 
+    Init_gpio();
     init_rtc(&i2c_rtc);
     init_sd(&fs_handle);
     uart_int();
-    Init_gpio();
     init_all_timer();
 
 
@@ -162,7 +173,7 @@ void application_start( ){
         }
 
     //-----version velardena descomentar linea de silent-----------------------------------------------------
-    //silent=get_gpio_menssage(SOUND_ONOFF); *******************
+    //silent=get_gpio_menssage(SOUND_ONOFF); //*******************
 //    silent=WICED_TRUE;
 //    silent=WIC
 //    printf("antes %s \n",bt_joined.mac_lamp);
@@ -170,10 +181,10 @@ void application_start( ){
 //    printf("despues %s \n",bt_joined.mac_lamp);
 
 ////
-
+        // Red para provar en lasec
 //    Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
 //    Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
-//    Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+    //Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
 //    Set_MASK("-M255.255.248.0",15,WICED_UART_3);
 //    Set_GATEWAY("-G10.90.120.1",16,WICED_UART_3);
 //    Set_IP("-C10.90.120.41",16,WICED_UART_3);
@@ -181,14 +192,6 @@ void application_start( ){
 //
 ////
 
-
-        //
-//    Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
-//    Set_KEY("-KLasec123.",20,WICED_UART_3);
-//    Set_SERVER("-I10.174.107.60",20,WICED_UART_3);
-//    Set_MASK("-M255.255.248.0",16,WICED_UART_3);
-//    Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-//    Set_IP("-C10.174.107.62",16,WICED_UART_3);
 ////
     //Set_SSID("-SSF-DEMO",13,WICED_UART_3);
     //Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
@@ -201,7 +204,6 @@ void application_start( ){
 //
 ////
 
-
 //    Set_SSID("-SNEM-OT-OPS",20,WICED_UART_3);
 //    Set_KEY("-KOp3r4t!0n0t",20,WICED_UART_3);
 //    Set_SERVER("-I10.116.0.230",17,WICED_UART_3);
@@ -210,14 +212,27 @@ void application_start( ){
 //    Set_GATEWAY("-G10.117.103.254",16,WICED_UART_3);
 
 
-        Set_SSID("-STracking-SD",13,WICED_UART_3);
-        Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
-        Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
+//        Set_SSID("-STracking-SD",13,WICED_UART_3);
+//        Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
+//        Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
 //        Set_MASK("-M255.255.252.0",15,WICED_UART_3);
 //        Set_IP("-C10.178.55.50",16,WICED_UART_3);
 //        Set_GATEWAY("-G10.178.55.254",16,WICED_UART_3);
-        Set_config();
 
+//        /* Karim */
+        //Set_SSID("-S87377-0184",15,WICED_UART_3);
+        //Set_KEY("-KE$#c65&MiK7&uwxc12",22,WICED_UART_3);
+        //Set_SERVER("-I172.16.10.40",18,WICED_UART_3);    //10.174.110.100
+
+//        // Fernando tlayoltita
+//           Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
+//           Set_KEY("-KLasec123.",20,WICED_UART_3);
+//           Set_SERVER("-I10.174.109.33",20,WICED_UART_3); //10.174.107.60
+//           Set_MASK("-M255.255.248.0",16,WICED_UART_3);
+//           Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
+//           Set_IP("-C10.174.104.4",16,WICED_UART_3);
+//
+//        Set_config();
 
 //            silent=WICED_TRUE;
     sent_file_flag=WICED_TRUE;
@@ -227,41 +242,30 @@ void application_start( ){
 //    buzz(10,0);
 //    buzz(150,0);
             main_c=is_config();
+            printf("\n Esto vale el is_config %d\n",main_c);
 
 
 
-
-    switch (is_config()) {
+    switch (main_c) {
               case 0:
                   set_name();
-                  set_name();
-                  net_config();
-   //               Set_SSID("-SSF-DEMO",13,WICED_UART_3);
-   //               Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
-   //               Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
-   //               Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-   //               Set_IP("-C10.174.109.60",16,WICED_UART_3);
-   //               Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-   //               net_config();
-   //               Set_SSID("-SSF-DEMO",13,WICED_UART_3);
-   //               Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
-   //               Set_SERVER("-I10.174.107.50",17,WICED_UART_3);
-   //               Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-   //               Set_IP("-C10.174.109.51",16,WICED_UART_3);
-   //               Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-   //               Set_config();
-//                  Set_SSID("-SSF-TRACKING",20,WICED_UART_3);
-//                   Set_KEY("-KP4LM4R3J0.@",20,WICED_UART_3);
-//                   Set_SERVER("-I172.16.240.2",17,WICED_UART_3);
-//                   Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-//                   Set_GATEWAY("-G172.16.240.1",16,WICED_UART_3);
-//
-//                   Set_IP("-C172.16.245.35",16,WICED_UART_3);
 
-//                       Set_config();
+                  //Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
+                  //Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
+                  //Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+
+                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
+                  Set_KEY("-KLasec123.",20,WICED_UART_3);
+                  Set_SERVER("-I10.174.109.33",20,WICED_UART_3);
+                  Set_MASK("-M255.255.248.0",16,WICED_UART_3);
+                  Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
+                  Set_IP("-C10.174.104.5",16,WICED_UART_3);
+                  Set_config();
+
+                  net_config();
                   break;
               case 3:
-                  set_name();
+                  //set_name();
                   //set_name();
                   init_tcp_w();
                    net_vehicle();
