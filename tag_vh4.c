@@ -16,7 +16,7 @@
  * --> Pocas consultas en la memoria flash al igual que su liberacion, pruebas de reinicos pasada con exito
  * --> Cuanta con acarreos
  * --> Baudios 230400
- * --> Conexion por IP estatica, la cual necesita gatway, mascara e ip statica
+ * --> Conexion por ip estatica pero puesta en el servidor
  * --> Si se reinicia vuelve a sonar */
 
 
@@ -254,19 +254,17 @@ void application_start( ){
                   //Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
                   //Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
 
-                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
-                  Set_KEY("-KLasec123.",20,WICED_UART_3);
-                  Set_SERVER("-I10.174.109.33",20,WICED_UART_3);
-                  Set_MASK("-M255.255.248.0",16,WICED_UART_3);
-                  Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-                  Set_IP("-C10.174.104.5",16,WICED_UART_3);
-                  Set_config();
+//                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
+//                  Set_KEY("-KLasec123.",20,WICED_UART_3);
+//                  Set_SERVER("-I10.174.109.33",20,WICED_UART_3);
+//                  Set_MASK("-M255.255.248.0",16,WICED_UART_3);
+//                  Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
+//                  Set_IP("-C10.174.104.5",16,WICED_UART_3);
+//                  Set_config();
 
                   net_config();
                   break;
               case 3:
-                  //set_name();
-                  //set_name();
                   init_tcp_w();
                    net_vehicle();
                   break;
