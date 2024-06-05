@@ -79,7 +79,7 @@ void timer_lcd(void* arg);
 void init_all_timer(){
 /*  Initialize timer*/
     WPRINT_APP_INFO( ("Initialize timer\n") );
-
+    printf("\n Inicio de timers \n");
 //    wiced_rtos_init_timer(&timer_Handle_reset_lcd, 60*TIMER_TIME, timer_lcd, NULL);
 
     wiced_rtos_init_timer(&timerHandle_reset, TIMER_TIME, Time_reboot, NULL);
@@ -91,8 +91,8 @@ void init_all_timer(){
 //        wiced_rtos_start_timer(&publishTimer);
         wiced_rtos_register_timed_event( &guardian, WICED_NETWORKING_WORKER_THREAD, &guardian_v, 1200, 0 );
         wiced_rtos_register_timed_event( &guardian2, WICED_NETWORKING_WORKER_THREAD, &guardian_V2, 1000, 0 );
-        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 2100, 0 );
-        wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4500, 0 );
+        wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 2100, 0 );       /* HE; */
+        wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4500, 0 );   /* HVT */
 
 //        wiced_rtos_create_thread(&ThreadHandle_W, THREAD_BASE_PRIORITY+5, "WIFI", SearchWifi, THREAD_STACK_SIZE, NULL);
 
@@ -108,46 +108,67 @@ start_whatchdog_LCD(void)   /* Watchdog */
     wiced_rtos_register_timed_event( &Pantalla_guardian, WICED_NETWORKING_WORKER_THREAD, &Pantalla_T,4000, 0 );   /* Verificar el funcionamiento de la pantalla */
 }
 
-static wiced_result_t Acarreo_V( void ){
+static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
 
-//    for(int b=1;b<buff_aux;b++){
-//
-//               if(strlen(aux_log_collision[b].mac_bt)!=0){
-//                   printf("CCC %s,\n",aux_log_collision[b].mac_bt);
-//                   }
-//       }
+    if((_wifi_status == WICED_TRUE) || (_wifi_status == WICED_TRUE))
+    {
+        if(strlen(log_accarreos.mac_bt)!=0)
+        {  /* Si se ingreso una mac entra aqui */
+//            wiced_filesystem_unmount(&fs_handle);
+//            init_sd(&fs_handle);
+//            read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
 
-//         printf("\t%d\t%s\t%s\n",log_accarreos.type,log_accarreos.time_start,log_accarreos.mac_bt);
+            strcpy(log_accarreos.id,"700");
+            //log_accarreos.id[strlen(id_count)]='\0';
+            //sprintf(_HVT_Text,"%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
+            strcpy(_HVT_Text,data_to_json_acarreo(&log_accarreos,s_Mac_W));
+            //printf("HVT;%s\n",_HVT_Text);
 
-//
-//            memset(id_count,'1',2);
-    if(strlen(log_accarreos.mac_bt)!=0){  /* Si se ingreso una mac entra aqui */
-        wiced_filesystem_unmount(&fs_handle);
-        init_sd(&fs_handle);
-
-        read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
-
-        strcpy(log_accarreos.id,id_count);
-        log_accarreos.id[strlen(id_count)]='\0';
-
-        printf("%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
-        memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
-
-        if(atoi(id_count)<=limit_save_file){
-            write_data_acarreo(ACARREO_ROOT,date_get(&i2c_rtc),&log_accarreos,s_Mac_W,&fs_handle);
             memset(log_accarreos.date,NULL,12);
             memset(log_accarreos.mac_bt,NULL,19);
             memset(log_accarreos.name,NULL,18);
             memset(log_accarreos.id,NULL,3);
             memset(log_accarreos.time_start,NULL,12);
+
+//            wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
+//            _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
+//            printf("\n _machine_flag = WICED_TRUE \n");
+//            wiced_rtos_set_semaphore(&StateMachineSemaphore);
+            if(machineFlagControl == 0)
+            {
+                machineFlagControl = 1;
+                _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
+                printf("\n _machine_flag = WICED_TRUE \n");
+                machineFlagControl = 0;
+            }
         }
+    }
+    else if((_wifi_status == WICED_FALSE) || (_wifi_status == WICED_FALSE))
+    {
+        if(strlen(log_accarreos.mac_bt)!=0)
+        {  /* Si se ingreso una mac entra aqui */
+            wiced_filesystem_unmount(&fs_handle);
+            init_sd(&fs_handle);
 
-//        log_accarreos.id=0;
+            read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
 
+            strcpy(log_accarreos.id,id_count);
+            log_accarreos.id[strlen(id_count)]='\0';
 
+            printf("%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
+            memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+
+            if(atoi(id_count)<=limit_save_file){
+                write_data_acarreo(ACARREO_ROOT,date_get(&i2c_rtc),&log_accarreos,s_Mac_W,&fs_handle);
+                memset(log_accarreos.date,NULL,12);
+                memset(log_accarreos.mac_bt,NULL,19);
+                memset(log_accarreos.name,NULL,18);
+                memset(log_accarreos.id,NULL,3);
+                memset(log_accarreos.time_start,NULL,12);
+            }
+        }
     }
 
-//
     if((Product_f==WICED_TRUE)&&(GEOSF_F==WICED_TRUE)){
          Product_f=WICED_FALSE;
          GEOSF_F=WICED_FALSE;
@@ -233,71 +254,133 @@ static wiced_result_t Collision_V( void ){
 }
 
 
+static wiced_result_t Beacon_V( void ){      /* Datos de HE; */
 
-static wiced_result_t Beacon_V( void ){
+    printf("Timer HE %d\n",count_save);
+static uint8_t h=0;
+if(h < 1)
+{
+    for(int j=0;j<30;j++)
+    {
+        master_data2[j].flag=0;
+    }
+    h++;
+}
 
-//    for(int b=0;b<20;b++){
-//
-//            if(strlen(AUX_BEACON[b].mac_bt)!=0){
-//                printf("%s,%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start,AUX_BEACON[b].time_end);}
-//    }
-
-    if(count_save==(TIME_LOC/2)){
-        for(int b=1;b<buff_aux;b++){
+    if(count_save==(TIME_LOC/2))
+    {
+        for(int b=1;b<buff_aux;b++)
+        {
             AUX_BEACON[b].flag=0;
         }
-//        count_save=1;
-
     }
     else if(count_save==TIME_LOC){
-        for(int b=1;b<buff_aux;b++){
+            if(_wifi_status == WICED_TRUE)
+            {
+                printf("Entro en HE\n");
+            uint8_t cont = 0, b=1;
+            while(b <buff_aux)
+            {
+                if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0))
+                {
+                    if(master_data2[cont].flag == 0)
+                    {
+                        memcpy(data_alone.bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
+                        memcpy(data_alone.date,date_get_log(&i2c_rtc),12);
+                        strcpy(data_alone.time_start,AUX_BEACON[b].time_start);
+                        strcpy(data_alone.time_end,AUX_BEACON[b].time_end);
+                        strcpy(data_alone.bt_device.mac_wifi,s_Mac_W);
+                        strcpy(data_alone.state,"off");
+                        strcpy(data_alone.id,"700");    /* The value of 700 is a number that express online value */
 
-            if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
-                wiced_filesystem_unmount(&fs_handle);
-                init_sd(&fs_handle);
+                        strcpy(master_data2[cont].all_tex,data_to_json(&data_alone));
+                        printf("**** Texto compiado %s\n",master_data2[cont].all_tex);
+                        master_data2[cont].flag=1;
 
 
-//                printf("%s,%s\n",AUX_BEACON[b].mac_bt,AUX_BEACON[b].time_start);
+//                        printf("********* Guardado en posicion para mandar %d\n",cont);
+//                        memcpy(master_data2[cont].bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
+//                        memcpy(master_data2[cont].date,date_get_log(&i2c_rtc),12);
+//                        strcpy(master_data2[cont].time_start,AUX_BEACON[b].time_start);
+//                        strcpy(master_data2[cont].time_end,AUX_BEACON[b].time_end);
+//                        strcpy(master_data2[cont].bt_device.mac_wifi,s_Mac_W);
+//                        strcpy(master_data2[cont].state,"off");
+//                        strcpy(master_data2[cont].id,"700");    /* The value of 700 is a number that express online value */
+//                        master_data2[cont].flag=1;
 
-                strcpy(master_data.bt_device.mac_bt,AUX_BEACON[b].mac_bt);
-                strcpy(master_data.date,date_get_log(&i2c_rtc));
-                strcpy(master_data.time_start,AUX_BEACON[b].time_start);
-                strcpy(master_data.time_end,AUX_BEACON[b].time_end);
-                strcpy(master_data.bt_device.mac_wifi,s_Mac_W);
-                strcpy(master_data.state,"off");
+                        memset(AUX_BEACON[b].mac_bt,NULL,17);
+                        memset(AUX_BEACON[b].time_start,NULL,11);
+                        memset(AUX_BEACON[b].time_end,NULL,11);
 
+                        cont++;
+                        b++;
+                        //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
 
-//                printf("%s\n",read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle));
-//               strcpy(master_data.id,read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle));
-                read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
-                strcpy(master_data.id,id_count);
-                memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
-
-
-//                trabjar desde aquii con las funciones de condicional de guardado
-
-//                printf("%d",atoi(id_count));
-
-                if(atoi(id_count)<=limit_save_file){
-                    write_data(SF_ROOT,date_get(&i2c_rtc),master_data,&fs_handle);
-                    memset(AUX_BEACON[b].mac_bt,NULL,17);
-                    memset(AUX_BEACON[b].time_start,NULL,11);
-                    memset(AUX_BEACON[b].time_end,NULL,11);
+                        if(machineFlagControl == 0)
+                        {
+                            machineFlagControl = 1;
+                            _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
+                            printf("\n _machine_flag = WICED_TRUE \n");
+                            machineFlagControl = 0;
+                        }
+                        //wiced_rtos_set_semaphore(&StateMachineSemaphore);
+                    }
+                    else
+                    {
+                        cont++;
+                    }
+                    reg_incoming=WICED_FALSE;
                 }
-                else{
-                    printf("Excedio el limite %d\n",atoi(id_count));
+                else
+                {
+                    b++;
                 }
-//                printf("%s",filebuf);
-                reg_incoming=WICED_FALSE;
+            }
 
+            count_save=1;               /* Every 6 counts it does what is in the function */
+            if(count_beacon<buff_aux){  /* Que pasa cuando count_beacon es mayo a 100, si encotro */
+                count_beacon=1;
             }
         }
-        count_save=1;
-        if(count_beacon<buff_aux){  /* Que pasa cuando count_beacon es mayo a 100, si encotro */
-            count_beacon=1;
+        else if(_wifi_status == WICED_FALSE)
+        {
+            for(int b=1;b<buff_aux;b++){
+                if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
+                    wiced_filesystem_unmount(&fs_handle);
+                    init_sd(&fs_handle);
+
+                    strcpy(master_data.bt_device.mac_bt,AUX_BEACON[b].mac_bt);
+                    strcpy(master_data.date,date_get_log(&i2c_rtc));
+                    strcpy(master_data.time_start,AUX_BEACON[b].time_start);
+                    strcpy(master_data.time_end,AUX_BEACON[b].time_end);
+                    strcpy(master_data.bt_device.mac_wifi,s_Mac_W);
+                    strcpy(master_data.state,"off");
+
+                    read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
+                    strcpy(master_data.id,id_count);
+                    memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+
+            //      printf("%d",atoi(id_count));
+
+                    if(atoi(id_count)<=limit_save_file){
+                        write_data(SF_ROOT,date_get(&i2c_rtc),master_data,&fs_handle);
+                        memset(AUX_BEACON[b].mac_bt,NULL,17);
+                        memset(AUX_BEACON[b].time_start,NULL,11);
+                        memset(AUX_BEACON[b].time_end,NULL,11);
+                    }
+                    else{
+                        printf("Excedio el limite %d\n",atoi(id_count));
+                    }
+            //                printf("%s",filebuf);
+                    reg_incoming=WICED_FALSE;
+
+                }
+            }
+            count_save=1;
+            if(count_beacon<buff_aux){  /* Que pasa cuando count_beacon es mayo a 100, si encotro */
+                count_beacon=1;
+            }
         }
-//        else                  // --- Agregado por mi
-//            count_beacon=1;   // --- Agregado por mi
     }
     count_save=count_save+1;
 

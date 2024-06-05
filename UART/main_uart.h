@@ -44,6 +44,10 @@ static wiced_thread_t UART_M3;
 
 struct telemetry_data log_telemetry_data;
 struct location_data master_data;
+//struct location_data master_data2[30];
+struct location_data_online master_data2[30];
+struct location_data data_alone; /* ********* */
+struct location_data master_data3;
 struct tempo AUX_BEACON[buff_aux];
 struct tempo_collision aux_log_collision[buff_aux];
 
@@ -60,7 +64,7 @@ typedef struct data_in
 }dataa;
 
 struct data_in data_btt [100+10];
-
+struct data_in data_B;
 
 typedef struct
 {
@@ -184,11 +188,11 @@ void main_uart(wiced_thread_arg_t arg){
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);      //Aqui si llega BNM y BEAC ---> _B_transit=WICED_TRUE; si fal==1 ---> fallen_f=WICED_TRUE;
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);
+                    data_file_write(rx_buffer3);       /* HE */
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
-                    data_bt_send(rx_buffer3);
+                    data_bt_send(rx_buffer3);                   /* Acomodo datos para karim */
 
                     tamagochi(rx_buffer3,&log_accarreos);
 //                    limit_log=id_revived(rx_buffer3);
@@ -232,15 +236,12 @@ void uart_int(){
 }
 
 
-void data_file_write(unsigned char* buffer_in ){
+void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan los datos de localizacion */
     unsigned char str_switch[4];
     unsigned char str_split[128];
 
 
     wiced_bool_t wirte1=WICED_FALSE;
-
-//    read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
-//    sprintf(s_Mac_W,"%02X:%02X:%02X:%02X:%02X:%02X",MacW.octet[0],MacW.octet[1],MacW.octet[2],MacW.octet[3],MacW.octet[4],MacW.octet[5]);
 
     strncpy(str_switch,buffer_in,4);
     memcpy(str_split,buffer_in,strlen(buffer_in));
@@ -263,7 +264,7 @@ void data_file_write(unsigned char* buffer_in ){
                 case 0:
 //                        memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
                     if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){  //Tamaño mayor a 15, y si hay 5 : ocalizados en la cadena
-                        for(int b=0;b<buff_aux;b++){
+                        for(int b=0;b<buff_aux;b++){  /* *** Va a buscar si ya tiene registro de el *** */
                             if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){ /* No esta aqui */
 //                                AUX_BEACON[b].flag=0;
 //                                printf("no existe \n");
@@ -277,7 +278,7 @@ void data_file_write(unsigned char* buffer_in ){
                                 if(strlen(AUX_BEACON[b].time_start)!=0){ /* Si ya tiene registro de entrada, se pone el registro de salida */
                                     strcpy(AUX_BEACON[b].time_end,time_get(&i2c_rtc));
                                     printf("OK end\n");
-
+                                    sprintf(_HE_Hola,"HX;END %d: %s",b,AUX_BEACON[b].mac_bt);
                                 }
                                 AUX_BEACON[b].flag=1;
                                 wirte1=WICED_TRUE;
@@ -291,6 +292,7 @@ void data_file_write(unsigned char* buffer_in ){
                                 if(strlen(AUX_BEACON[count_beacon].time_start)<1){
                                     strcpy(AUX_BEACON[count_beacon].time_start,time_get(&i2c_rtc));
                                     printf("OK BEAC GEOSF\n");
+                                    sprintf(_HE_OTRO,"HX;INCIO %d: %s",count_beacon,AUX_BEACON[count_beacon].mac_bt);
                                 }
                                 count_beacon=count_beacon+1;
                             }
@@ -317,18 +319,7 @@ void data_file_write(unsigned char* buffer_in ){
         }
         x=0;
 
-
-
-//            read_data(SF_ROOT,"/01_08_2022.txt",&fs_handle);
-
-
-
     }
-
-
-
-//    wiced_rtos_set_semaphore(&displaySemaphore);
-
 }
 
 void get_join_macbt(unsigned char* buffer_in){

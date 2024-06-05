@@ -12,12 +12,16 @@
 *********************************************************************************/
 /* Codigo probado con luis hasta ahora la version mas estable la cual cuenta con las siguientes pruebas y caracteristicas
  *
- * --> Si no cuenta con conexion a internet se reinicia a el 1:30 segudnso aprox
- * --> Pocas consultas en la memoria flash al igual que su liberacion, pruebas de reinicos pasada con exito
+ * --> Si no cuenta con conexion a internet se reinicia a el 2:20 segudnso aprox
+ * --> pruebas de reinicos pasada con exito
  * --> Cuanta con acarreos
  * --> Baudios 230400
- * --> Conexion por ip estatica pero puesta en el servidor
- * --> Si se reinicia vuelve a sonar */
+ * --> Conexion por DHCP desde codigo
+ * --> Si se reinicia vuelve a sonar
+ * --> mejora de datos enviados en la trama B;
+ * --> conexion con wifi solo manda 2 veces un acarreo hecho o 2 veces localizacion por beacons
+ * --> Fecha 05/06/2024 */
+
 
 
 #include "wiced.h"
@@ -33,12 +37,13 @@ char aux_time[8];
 
 wiced_bool_t Product_f=WICED_TRUE;
 wiced_bool_t GEOSF_F=WICED_FALSE;
-
+uint8_t machineFlagControl=0;
 
 /* RTOS global constructs */
 static wiced_semaphore_t displaySemaphore;
 static wiced_semaphore_t tcpGatewaySemaphore;
 static wiced_semaphore_t tcpReceptionSemaphore;
+static wiced_semaphore_t StateMachineSemaphore;
 //static wiced_semaphore_t httpWait_post;
 //static wiced_semaphore_t httpWait_get;
 
@@ -111,6 +116,7 @@ void application_start( ){
 
     wiced_rtos_init_semaphore(&displaySemaphore);
     wiced_rtos_init_semaphore(&tcpGatewaySemaphore);
+    wiced_rtos_init_semaphore(&StateMachineSemaphore);
 
     wiced_rtos_init_semaphore(&httpWait_get);
     wiced_rtos_init_semaphore(&httpWait_post);
@@ -250,8 +256,8 @@ void application_start( ){
               case 0:
                   set_name();
 
-                  Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
-                  Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
+                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
+                  Set_KEY("-KLasec123.",20,WICED_UART_3);
                   Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
                   Set_config();
 

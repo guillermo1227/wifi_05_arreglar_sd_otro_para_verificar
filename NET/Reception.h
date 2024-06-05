@@ -18,7 +18,7 @@
 #define GEOLOC
 
 uint8_t count_tcp=0;
-uint8_t count_stream=0;
+uint8_t count_stream=0, fail_socket=0;
 /*************** Tcp Configurator Thread ***************/
 /* Thread to publish data to the cloud */
 
@@ -168,6 +168,7 @@ int tcp_gateway( void ){
     send_data_task=WICED_TRUE;
 
     int state=0;
+    static uint8_t return_v = 0;                    /* variable to control interactions */
     wiced_mac_t myMac;
     wiced_tcp_socket_t socket;                      // The TCP socket
     wiced_tcp_stream_t stream;                      // The TCP stream
@@ -198,7 +199,7 @@ int tcp_gateway( void ){
 //                     set_name();
                  tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+               //wiced_framework_reboot();
             }
 
         }
@@ -219,7 +220,7 @@ int tcp_gateway( void ){
                  wiced_rtos_delay_milliseconds(100);
                  tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+               //wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 2\n"));
@@ -243,7 +244,7 @@ int tcp_gateway( void ){
 
                  tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+               //wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 3\n"));
@@ -259,6 +260,14 @@ int tcp_gateway( void ){
 
         WPRINT_APP_INFO(("try %d\n",try_n));
 
+        if(try_n > 15)
+        {
+            _wifi_status = WICED_FALSE;
+        }
+        else
+        {
+            _wifi_status = WICED_TRUE;
+        }
 
         wiced_ip_address_t myIpAddress;
         wl_bss_info_t ap_info_buffer;
@@ -277,16 +286,7 @@ int tcp_gateway( void ){
 
         // Initialize the TCP stream
         wiced_tcp_stream_init(&stream, &socket);
-////
-//        for(int f=0;f<100;f++){
-//            memcpy(data_btt[f].mac_bt,"01:01:01:01:01:01",17);
-//            memcpy(data_btt[f].rssi,"-85",5);
-//            memcpy(data_btt[f].fallen,"0",2);
-//        }
-//
-//////
-//////
-//        s_count_x=100;
+
 
               if((s_count_x<=limit_data)){
                   WPRINT_APP_INFO(("Multiple Tcp client\n"));
@@ -314,27 +314,16 @@ int tcp_gateway( void ){
 //                                  wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                                   send_data_task=WICED_TRUE;
                               }
+                              sprintf(data_out,"\nLOG;INICIO\r\n");
+                              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                              if(result==WICED_TCPIP_SUCCESS){
+                                  send_data_task=WICED_TRUE;
+                              }
+                              else
+                              {
+                                  fail_socket++;
+                              }
                           }
-//                          else if(f==1){
-//                              if((strlen(log_accarreos.mac_bt)!=0)){
-//                          //                                wiced_rtos_delay_microseconds( 10 );
-//                                  strcpy(log_accarreos.id,"900");
-//                                  sprintf(data_out,"\n%s\r\n",data_to_json_acarreo(&log_accarreos,s_Mac_W));
-//                                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                                  if(result==WICED_TCPIP_SUCCESS){
-//                                      wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-//                                      send_data_task=WICED_TRUE;
-//                                  }
-//                                  else{
-//                                      send_data_task=WICED_FALSE;
-//                                  }
-//                                  memset(log_accarreos.date,NULL,12);
-//                                  memset(log_accarreos.mac_bt,NULL,19);
-//                                  memset(log_accarreos.name,NULL,18);
-//                                  memset(log_accarreos.id,NULL,3);
-//                                  memset(log_accarreos.time_start,NULL,12);
-//                              }
-//                          }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
@@ -352,8 +341,19 @@ int tcp_gateway( void ){
                               send_data_task=WICED_TRUE;
 //                              return 1;
                            }
+                          else
+                          {
+                              fail_socket++;
+                          }
                           }
                       }
+                      wiced_rtos_delay_microseconds( 10 );  /* added */
+                      sprintf(data_out,"\nLOG;FIN\r\n");
+                      result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                      if(result==WICED_TCPIP_SUCCESS){
+                          send_data_task=WICED_TRUE;
+                      }
+                      fail_socket =0;
                       s_count_x=0;
                       data_send_bt=0;
                   }
@@ -373,6 +373,64 @@ int tcp_gateway( void ){
 
               }
 
+              /* Aqui pondre la cadena HVT */
+//              if((_wifi_status == WICED_TRUE) && strlen(_HVT_Text) != 0)
+//              {
+//                  sprintf(data_out,"\nHVT;%s\r\n",_HVT_Text);
+//
+//                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                  if(result==WICED_TCPIP_SUCCESS){
+//                      send_data_task=WICED_TRUE;
+//                  }
+//                  memset(_HVT_Text,NULL,150);
+//              }
+
+              /* Aqui va la cadena HE */
+
+//              sprintf(data_out,"\n%s\r\n",_HE_Hola);  /* FIn */
+//              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//              if(result==WICED_TCPIP_SUCCESS){
+//                  send_data_task=WICED_TRUE;
+//              }
+//
+//              sprintf(data_out,"\n%s\r\n",_HE_OTRO);  /* Inicio */
+//              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//              if(result==WICED_TCPIP_SUCCESS){
+//                  send_data_task=WICED_TRUE;
+//              }
+//
+//              uint8_t b;
+//              for(b =0;b<30;b++)
+//              {
+//                  if((master_data2[b].flag == 1))
+//                  {
+//                      wiced_rtos_delay_microseconds( 10 );
+//                      printf("Entra en :%d\n",b);
+//                      sprintf(data_out,
+//                              "\nHX;{\"LogId\":%s,\"DeviceId\":\"%s\",\"Reader\":\"%s\",\"EnterTime\":\"%s-%s\",\"OutTime\":\"%s-%s\"}\r\n"
+//                              ,master_data2[b].id,master_data2[b].bt_device.mac_wifi,master_data2[b].bt_device.mac_bt,master_data2[b].date,master_data2[b].time_start,master_data2[b].date,master_data2[b].time_end);
+//
+//                      result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                      if(result==WICED_TCPIP_SUCCESS){
+//                          send_data_task=WICED_TRUE;
+//                      }
+//                      else
+//                      {
+//                          printf("No mando nada\n");
+//                      }
+//                      printf("%s\n",data_out);
+//                      memset(master_data2[b].bt_device.mac_bt,NULL,18);
+//                      memset(master_data2[b].time_start,NULL,12);
+//                      memset(master_data2[b].time_end,NULL,12);
+//                      memset(master_data2[b].id,NULL,4);
+//                      master_data2[b].flag=0;
+//
+//                      AUX_BEACON[b].mac_bt;
+//                  }
+//
+//              }
+              /* <----------------------> */
+
               memset(data_out,NULL,1000);
 //              key=1;
         wiced_tcp_stream_flush(&stream);
@@ -382,7 +440,29 @@ int tcp_gateway( void ){
         // Delete the stream and socket
         wiced_tcp_stream_deinit(&stream);
         wiced_tcp_delete_socket(&socket);
-        return 1;
+
+        if(_machine_flag == WICED_TRUE)
+        {
+            printf("\n Si esta en true \n");
+        }
+        else
+            printf("No es true sigue llendo a 3\n");
+
+        if(_machine_flag == WICED_TRUE)
+        {
+            printf("Voy a ver que mandaron*******************\n");
+            return 1;
+        }
+        else if(return_v < 1)
+        {
+            return_v++;
+            /* Retorna hacia el numero 1 */
+            return 1;
+        }
+        else
+        {
+            return 3;
+        }
 
 
 }
@@ -433,18 +513,6 @@ int tcp_client_aca( )
 //                 wiced_framework_reboot();
               }
 
-  //            WPRINT_APP_INFO(("falied 1\n"));
-  //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-  //                flag_time_set=WICED_FALSE;
-  //                flag_time_set_PUBLISH=WICED_FALSE;
-  //                            date_set(aux_date_y,&i2c_rtc);
-  //                wiced_rtos_delay_microseconds(100);
-  //                            time_set(aux_time,&i2c_rtc);
-  //                printf("%s,%s\n",aux_date_y,aux_time);
-  //                wiced_rtos_delay_microseconds(2000);
-  //
-  //            }
-
           }
           else{
   //            try_n=0;
@@ -461,17 +529,6 @@ int tcp_client_aca( )
                   check_sound_onoff();
 
                    wiced_rtos_delay_milliseconds(100);
-  //                     set_name();
-  //                 if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-  //                     flag_time_set=WICED_FALSE;
-  //                     flag_time_set_PUBLISH=WICED_FALSE;
-  //                                 date_set(aux_date_y,&i2c_rtc);
-  //                     wiced_rtos_delay_microseconds(100);
-  //                                 time_set(aux_time,&i2c_rtc);
-  //                     printf("%s,%s\n",aux_date_y,aux_time);
-  //                     wiced_rtos_delay_microseconds(2000);
-  //
-  //                 }
 //                 wiced_framework_reboot();
               }
 
@@ -493,17 +550,6 @@ int tcp_client_aca( )
   ////                   set_name();
                   check_sound_onoff();
                        wiced_rtos_delay_milliseconds(100);
-  //                     set_name();
-  //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-  //                flag_time_set=WICED_FALSE;
-  //                flag_time_set_PUBLISH=WICED_FALSE;
-  //                            date_set(aux_date_y,&i2c_rtc);
-  //                wiced_rtos_delay_microseconds(100);
-  //                            time_set(aux_time,&i2c_rtc);
-  //                printf("%s,%s\n",aux_date_y,aux_time);
-  //                wiced_rtos_delay_microseconds(2000);
-  //
-  //            }
 
 //                 wiced_framework_reboot();
               }
@@ -542,57 +588,65 @@ int tcp_client_aca( )
           wiced_tcp_stream_init(&stream, &socket);
   //
 
-          // Send the data via the stream
-//                if(sent_file_flag==WICED_TRUE){
-
-                    coun=read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
-                    /* get the first token */
-                    token = strtok(filebuf, s);
-                    /* walk through other tokens */
-                    if(coun!=0){
-
-                        while( token != NULL ) {
-                                        //printf( " >>>>>  %s\n", token );
-                              wiced_rtos_delay_microseconds( 10 );
-                              //printf("\n Mando algo \n");
-                              sprintf(data_out,"\nHVT;%s\r\n",token);
-                              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-
-                                 if(result==WICED_TCPIP_SUCCESS){
-//                                     wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-                                     send_data_task=WICED_TRUE;
-                                     printf( " >>>>>  %s\n", token );
-                                  }
-                             token = strtok(NULL, s);
-                             coun--;
-                            }
-                    }
-                    else{
-                        result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
-                        if(result==WICED_TCPIP_SUCCESS){
-                           wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
-                           send_data_task=WICED_TRUE;
-                        }
-                    }
-
-                            wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
-
-                          memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
-
-                          if(coun<=2){
-  //                            sent_file_flag=WICED_FALSE;
-  //                            break;
-                          }
-                          else{
-
-                          }
-                    wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);
-
-//                }
 
 
+          if(_machine_flag == WICED_FALSE)
+          {
+              coun=read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
+              /* get the first token */
+              token = strtok(filebuf, s);
+              /* walk through other tokens */
+              if(coun!=0){
+                  while( token != NULL ) {
+                      wiced_rtos_delay_microseconds( 10 );
+                      sprintf(data_out,"\nHVT;%s\r\n",token);
+                      result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                      printf("%s\n",data_out);
+                      if(result==WICED_TCPIP_SUCCESS){
+              //                                    wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+                          send_data_task=WICED_TRUE;
+                          printf( " >>>>>  %s\n", token );
+                      }
+                      token = strtok(NULL, s);
+                      coun--;
+                  }
+              }
+              else{
+                  result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
+                  if(result==WICED_TCPIP_SUCCESS){
+                      wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
+                      send_data_task=WICED_TRUE;
+                  }
+              }
+              wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
+
+              memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+
+              wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);
+          }
+          else if(_machine_flag == WICED_TRUE)
+          {
+              count_tcp=0;
+              /* Aqui pondre la cadena HVT */
+              if((_wifi_status == WICED_TRUE) && strlen(_HVT_Text) != 0)
+              {
+                  sprintf(data_out,"\nHVT;%s\r\n",_HVT_Text);
+                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                  if(result==WICED_TCPIP_SUCCESS){
+                      send_data_task=WICED_TRUE;
+                  }
+                  wiced_rtos_delay_microseconds( 10 );
+                  sprintf(data_out,"\nHVT;%s\r\n",_HVT_Text);
+                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                  if(result==WICED_TCPIP_SUCCESS){
+                      send_data_task=WICED_TRUE;
+                  }
+                  memset(_HVT_Text,NULL,150);
+              }
+              wiced_rtos_delay_microseconds( 10 );
+          }
   //              memset(sendMessage,NULL,80);
-  //              memset(data_out,NULL,1000);
+                memset(data_out,NULL,1000);
 
                 sent_file_flag=!sent_file_flag;
 
@@ -700,18 +754,6 @@ int tcp_client_geo( )
 //                    wiced_framework_reboot();
                  }
 
-     //            WPRINT_APP_INFO(("falied 1\n"));
-     //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-     //                flag_time_set=WICED_FALSE;
-     //                flag_time_set_PUBLISH=WICED_FALSE;
-     //                            date_set(aux_date_y,&i2c_rtc);
-     //                wiced_rtos_delay_microseconds(100);
-     //                            time_set(aux_time,&i2c_rtc);
-     //                printf("%s,%s\n",aux_date_y,aux_time);
-     //                wiced_rtos_delay_microseconds(2000);
-     //
-     //            }
-
              }
              else{
      //            try_n=0;
@@ -728,18 +770,6 @@ int tcp_client_geo( )
                      check_sound_onoff();
 
                       wiced_rtos_delay_milliseconds(100);
-     //                     set_name();
-     //                 if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-     //                     flag_time_set=WICED_FALSE;
-     //                     flag_time_set_PUBLISH=WICED_FALSE;
-     //                                 date_set(aux_date_y,&i2c_rtc);
-     //                     wiced_rtos_delay_microseconds(100);
-     //                                 time_set(aux_time,&i2c_rtc);
-     //                     printf("%s,%s\n",aux_date_y,aux_time);
-     //                     wiced_rtos_delay_microseconds(2000);
-     //
-     //                 }
-//                    wiced_framework_reboot();
                  }
 
                  WPRINT_APP_INFO(("falied 2\n"));
@@ -760,17 +790,6 @@ int tcp_client_geo( )
      ////                   set_name();
                      check_sound_onoff();
                           wiced_rtos_delay_milliseconds(100);
-     //                     set_name();
-     //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-     //                flag_time_set=WICED_FALSE;
-     //                flag_time_set_PUBLISH=WICED_FALSE;
-     //                            date_set(aux_date_y,&i2c_rtc);
-     //                wiced_rtos_delay_microseconds(100);
-     //                            time_set(aux_time,&i2c_rtc);
-     //                printf("%s,%s\n",aux_date_y,aux_time);
-     //                wiced_rtos_delay_microseconds(2000);
-     //
-     //            }
 
 //                    wiced_framework_reboot();
                  }
@@ -808,57 +827,127 @@ int tcp_client_geo( )
              // Initialize the TCP stream
              wiced_tcp_stream_init(&stream, &socket);
 
-             // Send the data via the stream
-//                   if(sent_file_flag==WICED_TRUE){
+             if(_machine_flag == WICED_FALSE)
+             {
+                 coun=read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
+                 /* get the first token */
+                 token = strtok(filebuf, s);
+                 /* walk through other tokens */
+                 if(coun!=0){
 
-                       coun=read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
-                       /* get the first token */
-                       token = strtok(filebuf, s);
-                       /* walk through other tokens */
-                       if(coun!=0){
+                     while( token != NULL ) {
+                         //            printf( " >>>>>  %s\n", token );
+                         wiced_rtos_delay_microseconds( 10 );
+                         sprintf(data_out,"\nHE;%s\r\n",token);
+                         result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                         printf("%s\n",data_out);
+                         if(result==WICED_TCPIP_SUCCESS){
+                 //                                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
+                             send_data_task=WICED_TRUE;
 
-                           while( token != NULL ) {
-                               //            printf( " >>>>>  %s\n", token );
-                                 wiced_rtos_delay_microseconds( 10 );
-                                 sprintf(data_out,"\nHE;%s\r\n",token);
-                                 result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                         }
+                         token = strtok(NULL, s);
+                         coun--;
+                     }
+                 }
+                 else{
+                     result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
+                     if(result==WICED_TCPIP_SUCCESS){
+                         wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
+                         send_data_task=WICED_TRUE;
 
-                                    if(result==WICED_TCPIP_SUCCESS){
-//                                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
-                                        send_data_task=WICED_TRUE;
+                     }
+                 }
 
-                                     }
-                                token = strtok(NULL, s);
-                                coun--;
-                               }
-                       }
-                       else{
-                           result=wiced_tcp_stream_write(&stream, NO_DATA, strlen(NO_DATA));
-                           if(result==WICED_TCPIP_SUCCESS){
-                               wiced_uart_transmit_bytes(WICED_UART_1,NO_DATA,strlen(NO_DATA));
-                               send_data_task=WICED_TRUE;
+                 wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
 
-                               }
+                 memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+
+                 wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);
+             }
+             else if(_machine_flag == WICED_TRUE)  /* Send online information */
+             {
+                 /* Aqui va la cadena HE */
+                 count_tcp=0;
+
+//                 sprintf(data_out,"\n%s\r\n",_HE_Hola);  /* FIn */
+//                 result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                 if(result==WICED_TCPIP_SUCCESS){
+//                     send_data_task=WICED_TRUE;
+//                 }
+//
+//                 sprintf(data_out,"\n%s\r\n",_HE_OTRO);  /* Inicio */
+//                 result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                 if(result==WICED_TCPIP_SUCCESS){
+//                     send_data_task=WICED_TRUE;
+//                 }
+
+                 uint8_t b;
+                 for(b =0;b<30;b++)
+                 {
+                     if((master_data2[b].flag == 1))
+                     {
+                         wiced_rtos_delay_microseconds( 10 );
+                         printf("Entra en :%d\n",b);
+
+                         sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
+                         result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                         if(result==WICED_TCPIP_SUCCESS){
+                             send_data_task=WICED_TRUE;
+                             printf("Si %s\n",data_out);
+                         }
+                         else
+                         {
+                             printf("No mando nada\n");
                          }
 
-                               wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
+                         sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
+                         result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+                         if(result==WICED_TCPIP_SUCCESS){
+                             send_data_task=WICED_TRUE;
+                             printf("Si %s\n",data_out);
+                         }
+                         else
+                         {
+                             printf("No mando nada\n");
+                         }
 
-                             memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
+                         master_data2[b].flag=0;
+                         memset(master_data2[b].all_tex,NULL,150);
+//                         sprintf(data_out,"\nHX;{\"LogId\":%s,\"DeviceId\":\"%s\",\"Reader\":\"%s\",\"EnterTime\":\"%s-%s\",\"OutTime\":\"%s-%s\"}\r\n",master_data2[b].id,master_data2[b].bt_device.mac_wifi,master_data2[b].bt_device.mac_bt,master_data2[b].date,master_data2[b].time_start,master_data2[b].date,master_data2[b].time_end);
+//
+//                         result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+//                         if(result==WICED_TCPIP_SUCCESS){
+//                             send_data_task=WICED_TRUE;
+//                             printf("Si %s\n",data_out);
+//                         }
+//                         else
+//                         {
+//                             printf("No mando nada\n");
+//                         }
+//                         memset(master_data2[b].bt_device.mac_bt,NULL,18);
+//                         memset(master_data2[b].time_start,NULL,12);
+//                         memset(master_data2[b].time_end,NULL,12);
+//                         memset(master_data2[b].id,NULL,4);
+                         //master_data2[b].flag=0;
+                     }
 
-                             if(coun<=2){
-     //                            sent_file_flag=WICED_FALSE;
-     //                            break;
-                             }
-                             else{
-
-                             }
-                       wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);
-
-//                   }
+                 }
+                 //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
+                 if(machineFlagControl == 0)
+                 {
+                     machineFlagControl = 1;
+                     _machine_flag = WICED_FALSE;   /* Variable to indicate the fill of the carry whit internet */
+                     printf("\n _machine_flag = WICED_TRUE \n");
+                     machineFlagControl = 0;
+                 }
+                        /* Variable to indicate the fill of the carry whit internet */
+                 //wiced_rtos_set_semaphore(&StateMachineSemaphore);
+             }
 
 
      //              memset(sendMessage,NULL,80);
-     //              memset(data_out,NULL,1000);
+                   memset(data_out,NULL,1000);
 
                    sent_file_flag=!sent_file_flag;
 
@@ -875,6 +964,7 @@ int tcp_client_geo( )
 //                key=2;
                 count_tcp++;
 
+                printf("Se va ha %d\n",count_tcp);
                 if(count_tcp==TCP_NUMBER){
                     state=3;
                     count_tcp=0;

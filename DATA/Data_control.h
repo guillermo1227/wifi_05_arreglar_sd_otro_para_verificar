@@ -27,8 +27,14 @@ wiced_bool_t fallen_f =WICED_FALSE;
 wiced_bool_t risk_z=WICED_FALSE;
 wiced_bool_t _flag_aca=WICED_FALSE;
 wiced_bool_t _flag_driver = WICED_FALSE; /* Variable used to indicate the sound of driver */
+wiced_bool_t _wifi_status=WICED_FALSE;   /* Variable used to indicate the state of wifi */
+wiced_bool_t _machine_flag=WICED_FALSE;
 unsigned char _lateral_veh[2];
 unsigned char _lateral_lam[2];
+unsigned char _HVT_Text[150];
+unsigned char _HE_Text[50];
+unsigned char _HE_Hola[50];  /* No va */
+unsigned char _HE_OTRO[50];  /* Otra que no va */
 
 struct bt_data
 {
@@ -37,6 +43,7 @@ struct bt_data
     unsigned char mac_wifi[18];
     unsigned char rssi[4];
     unsigned char fallen[2];
+    uint8_t flag;
 };
 
 struct location_data
@@ -48,7 +55,14 @@ struct location_data
    unsigned char state[13];
    int priority;
    unsigned char id[4];
+   uint8_t flag;
 
+};
+
+struct location_data_online
+{
+    unsigned char all_tex[150];
+    uint8_t flag;
 };
 
 struct colliosn_mac_t
@@ -115,7 +129,7 @@ struct Acarreos
     unsigned char time_start[12];
     unsigned char date[12];
     unsigned char name[18];
-    unsigned char id[3];
+    unsigned char id[4];
 
 };
 
@@ -175,6 +189,7 @@ void tamagochi(char *input,struct Acarreos *acareo){
             x++;
             second_split=strtok(NULL,_split_tama_2);
         }
+        memcpy(_HE_OTRO,"HVT;ENTRO1",strlen("HVT;ENTRO1"));
 
     }
     else if(strstr(input,ID_name_beacon)){
@@ -209,7 +224,7 @@ void tamagochi(char *input,struct Acarreos *acareo){
             x++;
             second_split=strtok(NULL,_split_tama_2);
         }
-
+        memcpy(_HE_OTRO,"HVT;ENTRO2",strlen("HVT;ENTRO2"));
     }
 //    else if(strstr(input,_N_KDV))
 //        {

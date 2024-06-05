@@ -284,8 +284,6 @@ void write_data_acarreo(char* TGT_DIR,const char* filename,struct Acarreos *data
 
     wiced_filesystem_file_close( &f_src );
     wiced_filesystem_dir_close(&dir);
-
-
 }
 
 void write_data_collision(char* TGT_DIR,const char* filename,wiced_filesystem_t* fs_handle,struct colliosn_mac_t *data  ,struct tempo_collision * main,char * date,char * Vehi_Rep){
