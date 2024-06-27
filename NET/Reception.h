@@ -838,7 +838,7 @@ int tcp_client_geo( )
                      while( token != NULL ) {
                          //            printf( " >>>>>  %s\n", token );
                          wiced_rtos_delay_microseconds( 10 );
-                         sprintf(data_out,"\nHE;%s\r\n",token);
+                         sprintf(data_out,"\nH;%s\r\n",token);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          printf("%s\n",data_out);
                          if(result==WICED_TCPIP_SUCCESS){
@@ -890,7 +890,7 @@ int tcp_client_geo( )
                          wiced_rtos_delay_microseconds( 10 );
                          printf("Entra en :%d\n",b);
 
-                         sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
+                         sprintf(data_out,"\nH;%s\r\n",master_data2[b].all_tex);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
                              send_data_task=WICED_TRUE;
@@ -901,7 +901,7 @@ int tcp_client_geo( )
                              printf("No mando nada\n");
                          }
 
-                         sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
+                         sprintf(data_out,"\nH;%s\r\n",master_data2[b].all_tex);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
                              send_data_task=WICED_TRUE;

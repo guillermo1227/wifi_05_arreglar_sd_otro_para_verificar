@@ -283,7 +283,7 @@ if(h < 1)
             {
                 if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0))
                 {
-                    if(master_data2[cont].flag == 0)
+                    if(master_data2[cont].flag == 0)  /* LLevo el control para saber cual dato ya eta ingresado */
                     {
                         memcpy(data_alone.bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
                         memcpy(data_alone.date,date_get_log(&i2c_rtc),12);
@@ -297,17 +297,6 @@ if(h < 1)
                         printf("**** Texto compiado %s\n",master_data2[cont].all_tex);
                         master_data2[cont].flag=1;
 
-
-//                        printf("********* Guardado en posicion para mandar %d\n",cont);
-//                        memcpy(master_data2[cont].bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
-//                        memcpy(master_data2[cont].date,date_get_log(&i2c_rtc),12);
-//                        strcpy(master_data2[cont].time_start,AUX_BEACON[b].time_start);
-//                        strcpy(master_data2[cont].time_end,AUX_BEACON[b].time_end);
-//                        strcpy(master_data2[cont].bt_device.mac_wifi,s_Mac_W);
-//                        strcpy(master_data2[cont].state,"off");
-//                        strcpy(master_data2[cont].id,"700");    /* The value of 700 is a number that express online value */
-//                        master_data2[cont].flag=1;
-
                         memset(AUX_BEACON[b].mac_bt,NULL,17);
                         memset(AUX_BEACON[b].time_start,NULL,11);
                         memset(AUX_BEACON[b].time_end,NULL,11);
@@ -315,6 +304,7 @@ if(h < 1)
                         cont++;
                         b++;
                         //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
+                        wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
 
                         if(machineFlagControl == 0)
                         {

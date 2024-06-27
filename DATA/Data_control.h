@@ -33,8 +33,6 @@ unsigned char _lateral_veh[2];
 unsigned char _lateral_lam[2];
 unsigned char _HVT_Text[150];
 unsigned char _HE_Text[50];
-unsigned char _HE_Hola[50];  /* No va */
-unsigned char _HE_OTRO[50];  /* Otra que no va */
 
 struct bt_data
 {
@@ -189,8 +187,6 @@ void tamagochi(char *input,struct Acarreos *acareo){
             x++;
             second_split=strtok(NULL,_split_tama_2);
         }
-        memcpy(_HE_OTRO,"HVT;ENTRO1",strlen("HVT;ENTRO1"));
-
     }
     else if(strstr(input,ID_name_beacon)){
 
@@ -224,7 +220,6 @@ void tamagochi(char *input,struct Acarreos *acareo){
             x++;
             second_split=strtok(NULL,_split_tama_2);
         }
-        memcpy(_HE_OTRO,"HVT;ENTRO2",strlen("HVT;ENTRO2"));
     }
 //    else if(strstr(input,_N_KDV))
 //        {
