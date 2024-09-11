@@ -373,62 +373,7 @@ int tcp_gateway( void ){
 
               }
 
-              /* Aqui pondre la cadena HVT */
-//              if((_wifi_status == WICED_TRUE) && strlen(_HVT_Text) != 0)
-//              {
-//                  sprintf(data_out,"\nHVT;%s\r\n",_HVT_Text);
-//
-//                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                  if(result==WICED_TCPIP_SUCCESS){
-//                      send_data_task=WICED_TRUE;
-//                  }
-//                  memset(_HVT_Text,NULL,150);
-//              }
 
-              /* Aqui va la cadena HE */
-
-//              sprintf(data_out,"\n%s\r\n",_HE_Hola);  /* FIn */
-//              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//              if(result==WICED_TCPIP_SUCCESS){
-//                  send_data_task=WICED_TRUE;
-//              }
-//
-//              sprintf(data_out,"\n%s\r\n",_HE_OTRO);  /* Inicio */
-//              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//              if(result==WICED_TCPIP_SUCCESS){
-//                  send_data_task=WICED_TRUE;
-//              }
-//
-//              uint8_t b;
-//              for(b =0;b<30;b++)
-//              {
-//                  if((master_data2[b].flag == 1))
-//                  {
-//                      wiced_rtos_delay_microseconds( 10 );
-//                      printf("Entra en :%d\n",b);
-//                      sprintf(data_out,
-//                              "\nHX;{\"LogId\":%s,\"DeviceId\":\"%s\",\"Reader\":\"%s\",\"EnterTime\":\"%s-%s\",\"OutTime\":\"%s-%s\"}\r\n"
-//                              ,master_data2[b].id,master_data2[b].bt_device.mac_wifi,master_data2[b].bt_device.mac_bt,master_data2[b].date,master_data2[b].time_start,master_data2[b].date,master_data2[b].time_end);
-//
-//                      result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                      if(result==WICED_TCPIP_SUCCESS){
-//                          send_data_task=WICED_TRUE;
-//                      }
-//                      else
-//                      {
-//                          printf("No mando nada\n");
-//                      }
-//                      printf("%s\n",data_out);
-//                      memset(master_data2[b].bt_device.mac_bt,NULL,18);
-//                      memset(master_data2[b].time_start,NULL,12);
-//                      memset(master_data2[b].time_end,NULL,12);
-//                      memset(master_data2[b].id,NULL,4);
-//                      master_data2[b].flag=0;
-//
-//                      AUX_BEACON[b].mac_bt;
-//                  }
-//
-//              }
               /* <----------------------> */
 
               memset(data_out,NULL,1000);
@@ -441,7 +386,7 @@ int tcp_gateway( void ){
         wiced_tcp_stream_deinit(&stream);
         wiced_tcp_delete_socket(&socket);
 
-        if(_machine_flag == WICED_TRUE)
+        if(_machine_flag == WICED_TRUE) /* Quitar xxxxxxxxxxxxx */
         {
             printf("\n Si esta en true \n");
         }
@@ -589,9 +534,11 @@ int tcp_client_aca( )
   //
 
 
-
-          if(_machine_flag == WICED_FALSE)
+          static uint8_t inter1=0;
+          //if(_machine_flag == WICED_FALSE)
+          if(inter1<2)
           {
+              inter1++;
               coun=read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
               /* get the first token */
               token = strtok(filebuf, s);
@@ -827,8 +774,11 @@ int tcp_client_geo( )
              // Initialize the TCP stream
              wiced_tcp_stream_init(&stream, &socket);
 
-             if(_machine_flag == WICED_FALSE)
+             static uint8_t inter2=0;
+             //if(_machine_flag == WICED_FALSE)
+             if(inter2 <2)  /* Esto para que se ejecute solo dos veces esta seccion */
              {
+                 inter2++;
                  coun=read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
                  /* get the first token */
                  token = strtok(filebuf, s);
@@ -870,18 +820,6 @@ int tcp_client_geo( )
                  /* Aqui va la cadena HE */
                  count_tcp=0;
 
-//                 sprintf(data_out,"\n%s\r\n",_HE_Hola);  /* FIn */
-//                 result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                 if(result==WICED_TCPIP_SUCCESS){
-//                     send_data_task=WICED_TRUE;
-//                 }
-//
-//                 sprintf(data_out,"\n%s\r\n",_HE_OTRO);  /* Inicio */
-//                 result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                 if(result==WICED_TCPIP_SUCCESS){
-//                     send_data_task=WICED_TRUE;
-//                 }
-
                  uint8_t b;
                  for(b =0;b<30;b++)
                  {
@@ -914,33 +852,21 @@ int tcp_client_geo( )
 
                          master_data2[b].flag=0;
                          memset(master_data2[b].all_tex,NULL,150);
-//                         sprintf(data_out,"\nHX;{\"LogId\":%s,\"DeviceId\":\"%s\",\"Reader\":\"%s\",\"EnterTime\":\"%s-%s\",\"OutTime\":\"%s-%s\"}\r\n",master_data2[b].id,master_data2[b].bt_device.mac_wifi,master_data2[b].bt_device.mac_bt,master_data2[b].date,master_data2[b].time_start,master_data2[b].date,master_data2[b].time_end);
-//
-//                         result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                         if(result==WICED_TCPIP_SUCCESS){
-//                             send_data_task=WICED_TRUE;
-//                             printf("Si %s\n",data_out);
-//                         }
-//                         else
-//                         {
-//                             printf("No mando nada\n");
-//                         }
-//                         memset(master_data2[b].bt_device.mac_bt,NULL,18);
-//                         memset(master_data2[b].time_start,NULL,12);
-//                         memset(master_data2[b].time_end,NULL,12);
-//                         memset(master_data2[b].id,NULL,4);
-                         //master_data2[b].flag=0;
                      }
 
                  }
                  //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
-                 if(machineFlagControl == 0)
-                 {
-                     machineFlagControl = 1;
-                     _machine_flag = WICED_FALSE;   /* Variable to indicate the fill of the carry whit internet */
-                     printf("\n _machine_flag = WICED_TRUE \n");
-                     machineFlagControl = 0;
-                 }
+//                 if(machineFlagControl == 0)
+//                 {
+//                     machineFlagControl = 1;
+//                     _machine_flag = WICED_FALSE;   /* Variable to indicate the fill of the carry whit internet */
+//                     machineFlagControl = 0;
+//                 }
+
+                 wiced_rtos_lock_mutex(&GeolocalizationMutex);
+                 _machine_flag = WICED_FALSE;       /* Variable to indicate the fill of the carry whit internet */
+                 wiced_rtos_unlock_mutex(&GeolocalizationMutex);
+
                         /* Variable to indicate the fill of the carry whit internet */
                  //wiced_rtos_set_semaphore(&StateMachineSemaphore);
              }

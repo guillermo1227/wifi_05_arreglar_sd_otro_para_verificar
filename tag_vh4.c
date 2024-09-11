@@ -53,6 +53,7 @@ static wiced_thread_t ThreadHandle_C;
 static wiced_semaphore_t semaphoreHandle_C;
 
 static wiced_mutex_t HTTPMutex;
+static wiced_mutex_t GeolocalizationMutex;  /* Mutex usado en Geolocalizacion */
 
 static wiced_mutex_t i2cMutex;
 static wiced_mutex_t pubSubMutex;
@@ -113,6 +114,8 @@ void application_start( ){
     wiced_rtos_init_mutex(&i2cMutex);
     wiced_rtos_init_mutex(&pubSubMutex);
     wiced_rtos_init_mutex(&HTTPMutex);
+
+    wiced_rtos_init_mutex(&GeolocalizationMutex);
 
     wiced_rtos_init_semaphore(&displaySemaphore);
     wiced_rtos_init_semaphore(&tcpGatewaySemaphore);

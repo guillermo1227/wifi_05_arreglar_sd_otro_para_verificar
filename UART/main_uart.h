@@ -188,7 +188,7 @@ void main_uart(wiced_thread_arg_t arg){
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);      //Aqui si llega BNM y BEAC ---> _B_transit=WICED_TRUE; si fal==1 ---> fallen_f=WICED_TRUE;
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);       /* HE */
+                    data_file_write(rx_buffer3);       /* HE Beacons */
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
