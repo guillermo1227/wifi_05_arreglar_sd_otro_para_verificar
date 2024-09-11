@@ -281,11 +281,12 @@ if(h < 1)
             uint8_t cont = 0, b=1;
             while(b <buff_aux)
             {
-                if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0))
+                //if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0))
+                if((AUX_BEACON[b].mac_bt[0] != '\0')&&(AUX_BEACON[b].flag==0)&&(AUX_BEACON[b].time_end[0] != '\0'))
                 {
                     if(master_data2[cont].flag == 0)  /* LLevo el control para saber cual dato ya eta ingresado */
                     {
-                        memcpy(data_alone.bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
+                        memcpy(data_alone.bt_device.mac_bt,AUX_BEACON[b].mac_bt,18);
                         memcpy(data_alone.date,date_get_log(&i2c_rtc),12);
                         strcpy(data_alone.time_start,AUX_BEACON[b].time_start);
                         strcpy(data_alone.time_end,AUX_BEACON[b].time_end);
@@ -318,6 +319,8 @@ if(h < 1)
                     else
                     {
                         cont++;
+                        if(cont > 30) /* Uso para que sea un bucle infinito */
+                            break;
                     }
                     reg_incoming=WICED_FALSE;
                 }

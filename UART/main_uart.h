@@ -262,20 +262,22 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
 
             switch (x) {
                 case 0:
-//                        memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
                     if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){  //Tamaño mayor a 15, y si hay 5 : ocalizados en la cadena
-                        for(int b=0;b<buff_aux;b++){  /* *** Va a buscar si ya tiene registro de el *** */
-                            if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){ /* No esta aqui */
-//                                AUX_BEACON[b].flag=0;
-//                                printf("no existe \n");
-//                                wirte=WICED_FALSE;
-
-                            }
-                            else{                            /* Si esta la cadena */
+                        for(int b=0;b<buff_aux;b++){  /* *** Va a buscar si ya tiene registro del Beacon *** */
+//                            if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){ /* No esta aqui */
+////                                AUX_BEACON[b].flag=0;
+////                                printf("no existe \n");
+////                                 wirte=WICED_FALSE;
+//
+//                            }
+                            //else{                            /* Si esta la cadena */
+                            if(strstr(AUX_BEACON[b].mac_bt,cvl1))
+                            {
                                 AUX_BEACON[b].flag=1;
 
                                 printf("si existe \n");
-                                if(strlen(AUX_BEACON[b].time_start)!=0){ /* Si ya tiene registro de entrada, se pone el registro de salida */
+                                if(strlen(AUX_BEACON[b].time_start)!=0) /* Si ya tiene registro de entrada, se pone el registro de salida */
+                                {
                                     strcpy(AUX_BEACON[b].time_end,time_get(&i2c_rtc));
                                     printf("OK end\n");
                                 }
