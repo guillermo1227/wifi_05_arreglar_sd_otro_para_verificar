@@ -160,10 +160,10 @@ void application_start( ){
 
     dir_verify("/",&fs_handle,"/",ANTICOLISION);
     dir_verify("/",&fs_handle,"/",SF);
-    dir_verify("/",&fs_handle,"/",ACARREO);
+    //dir_verify("/",&fs_handle,"/",ACARREO);
 
 
-    file_verify(ACARREO_ROOT,&fs_handle,ACARREO_ROOT,date_get(&i2c_rtc));
+    //file_verify(ACARREO_ROOT,&fs_handle,ACARREO_ROOT,date_get(&i2c_rtc));
     file_verify(ANTICOLISION_ROOT,&fs_handle,ANTICOLISION_ROOT,date_get(&i2c_rtc));
     file_verify(SF_ROOT,&fs_handle,SF_ROOT,date_get(&i2c_rtc));
 
@@ -259,10 +259,10 @@ void application_start( ){
               case 0:
                   set_name();
 
-                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
-                  Set_KEY("-KLasec123.",20,WICED_UART_3);
-                  Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
-                  Set_config();
+//                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
+//                  Set_KEY("-KLasec123.",20,WICED_UART_3);
+//                  Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+//                  Set_config();
 
 //                  Set_SSID("-Ssmartflow-dev",20,WICED_UART_3);
 //                  Set_KEY("-KLasec123.",20,WICED_UART_3);
@@ -270,6 +270,11 @@ void application_start( ){
 //                  Set_MASK("-M255.255.248.0",16,WICED_UART_3);
 //                  Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
 //                  Set_IP("-C10.174.104.5",16,WICED_UART_3);
+//                  Set_config();
+
+//                  Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
+//                  Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
+//                  Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
 //                  Set_config();
 
                   net_config();

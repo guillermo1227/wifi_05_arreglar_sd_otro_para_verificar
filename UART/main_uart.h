@@ -91,7 +91,7 @@ bt_mc_cyp re_mac(wiced_mac_t mac){
 
 wiced_uart_config_t uart_config =
 {
-    .baud_rate    = 230400,
+    .baud_rate    = 115200,
     .data_width   = DATA_WIDTH_8BIT,
     .parity       = NO_PARITY,
     .stop_bits    = STOP_BITS_1,
@@ -194,7 +194,7 @@ void main_uart(wiced_thread_arg_t arg){
 //                    collision_event_beacon(rx_buffer3);
                     data_bt_send(rx_buffer3);                   /* Acomodo datos para karim */
 
-                    tamagochi(rx_buffer3,&log_accarreos);
+                    //tamagochi(rx_buffer3,&log_accarreos);
 //                    limit_log=id_revived(rx_buffer3);
 
                     memset(&rx_buffer3,'\0',RX_BUFFER_SIZE);

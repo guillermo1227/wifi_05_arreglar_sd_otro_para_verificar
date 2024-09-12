@@ -92,7 +92,7 @@ void init_all_timer(){
         wiced_rtos_register_timed_event( &guardian, WICED_NETWORKING_WORKER_THREAD, &guardian_v, 1200, 0 );
         wiced_rtos_register_timed_event( &guardian2, WICED_NETWORKING_WORKER_THREAD, &guardian_V2, 1000, 0 );
         wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 2100, 0 );       /* HE; */
-        wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4500, 0 );   /* HVT */
+        //wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4500, 0 );   /* HVT */
 
 //        wiced_rtos_create_thread(&ThreadHandle_W, THREAD_BASE_PRIORITY+5, "WIFI", SearchWifi, THREAD_STACK_SIZE, NULL);
 
@@ -318,11 +318,10 @@ if(h < 1)
 //                            machineFlagControl = 0;
 //                        }
 
-                        wiced_rtos_lock_mutex(&GeolocalizationMutex);
-                        _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
-                        wiced_rtos_unlock_mutex(&GeolocalizationMutex);
-
-                        wiced_rtos_set_semaphore(&StateMachineSemaphore);
+//                        wiced_rtos_lock_mutex(&GeolocalizationMutex);
+//                        _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
+//                        wiced_rtos_unlock_mutex(&GeolocalizationMutex);
+//                        wiced_rtos_set_semaphore(&StateMachineSemaphore);
                     }
                     else
                     {
@@ -333,6 +332,18 @@ if(h < 1)
                 else
                 {
                     b++;
+                }
+            }
+            for(uint8_t i=0;i<30;i++)
+            {
+                if(master_data2[i].flag == 1)
+                {
+                    printf("********** Al menos hay un beacon GEOSF que mandar ***************\n");
+                    wiced_rtos_lock_mutex(&GeolocalizationMutex);
+                    _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
+                    wiced_rtos_unlock_mutex(&GeolocalizationMutex);
+                    wiced_rtos_set_semaphore(&StateMachineSemaphore);
+                    break;
                 }
             }
 
