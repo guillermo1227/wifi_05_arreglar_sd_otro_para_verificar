@@ -374,7 +374,8 @@ void lcd_fallen_update(unsigned char* buffer_in,uint8_t *fallen){
     int t=0;
     char fall_at[2];
 
-    if(strstr(str_switch,"BNM|")){
+    //if(strstr(str_switch,"BNM|")){
+    if(strstr(str_switch,"BNM:")){
 
             unsigned char *cvf = strtok(str_split, delim);
             while(cvf != NULL){
@@ -384,8 +385,8 @@ void lcd_fallen_update(unsigned char* buffer_in,uint8_t *fallen){
                     case 1:
                         strcpy(str_temp,cvf);
                         if((strstr(str_temp,"BEAC"))){
-//                           risk_z=WICED_TRUE;
-                            _B_transit=WICED_TRUE;
+                           risk_z=WICED_TRUE;
+                            //_B_transit=WICED_TRUE; /* Esto estaba descomentado */
 
                         }
                     break;

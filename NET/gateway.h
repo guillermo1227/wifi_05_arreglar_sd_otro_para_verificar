@@ -451,7 +451,7 @@ void publishThread(wiced_thread_arg_t arg)
     }
 }
 
-void data_bt_send(unsigned char* buffer_in ){
+void data_bt_send(unsigned char* buffer_in ){  /* Gateway */
     Data_B_in = WICED_FALSE;
     unsigned char str_switch[4];
        unsigned char str_split[128];
@@ -461,7 +461,8 @@ void data_bt_send(unsigned char* buffer_in ){
 
        char delim[] = ",";     //establece como  realizara el split
        int x=0;
-    if(strstr(str_switch,"BNM|")){// && (Fill_Erase_B == WICED_FALSE)){
+    //if(strstr(str_switch,"BNM|")){
+       if(strstr(str_switch,"BNM:")){
             if(s_count_x==limit_data){
                 data_send_bt=s_count_x;
             }
@@ -529,7 +530,7 @@ void data_bt_send(unsigned char* buffer_in ){
 
                     if(Data_B_in == WICED_FALSE)    /* Save vehicule mac */
                     {
-                        //memcpy(data_btt[s_count_x+1].rssi,data_B.rssi,4); /* Only update the RSSI value */
+                        printf("Nuevo dato copiado ************\n");
                         memcpy(data_btt[s_count_x+1].mac_bt,data_B.mac_bt,17);
                         s_count_x++;
                         data_send_bt=s_count_x;

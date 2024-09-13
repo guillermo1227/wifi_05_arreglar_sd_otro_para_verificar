@@ -18,7 +18,7 @@
 #define GEOLOC
 
 uint8_t count_tcp=0;
-uint8_t count_stream=0, fail_socket=0;
+uint8_t count_stream=0;
 /*************** Tcp Configurator Thread ***************/
 /* Thread to publish data to the cloud */
 
@@ -260,7 +260,7 @@ int tcp_gateway( void ){
 
         WPRINT_APP_INFO(("try %d\n",try_n));
 
-        if(try_n > 3)
+        if(try_n > 5)
         {
             _wifi_status = WICED_FALSE;
         }
@@ -290,6 +290,7 @@ int tcp_gateway( void ){
 
               if((s_count_x<=limit_data)){
                   WPRINT_APP_INFO(("Multiple Tcp client\n"));
+                  printf("El valor de s_count_x %d\n",s_count_x);
                   if(s_count_x==limit_data){
                       data_send_bt=limit_data;
       //                count_bt=0;
@@ -305,6 +306,7 @@ int tcp_gateway( void ){
                           if(f==0){
       //                    sprintf(data_out,"\nV;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get(&i2c_rtc));
                               sprintf(data_out,"\nHX;%s,%s,%s,%s,%s\r\n",mac_wifi,mac_ap,ip,time_get(&i2c_rtc),date_get_log(&i2c_rtc));
+                              printf("%s\n",data_out);
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                               memcpy(data_btt[f].mac_bt,NULL,17);
                                 memcpy(data_btt[f].type,NULL,17);
@@ -319,17 +321,13 @@ int tcp_gateway( void ){
                               if(result==WICED_TCPIP_SUCCESS){
                                   send_data_task=WICED_TRUE;
                               }
-                              else
-                              {
-                                  fail_socket++;
-                              }
                           }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
                           sprintf(data_out,"\nBX;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
-
+                          printf("%s\n",data_out);
                                           memcpy(data_btt[f].mac_bt,NULL,17);
                                           memcpy(data_btt[f].type,NULL,17);
                                           memcpy(data_btt[f].rssi,NULL,4);
@@ -341,10 +339,6 @@ int tcp_gateway( void ){
                               send_data_task=WICED_TRUE;
 //                              return 1;
                            }
-                          else
-                          {
-                              fail_socket++;
-                          }
                           }
                       }
                       wiced_rtos_delay_microseconds( 10 );  /* added */
@@ -353,7 +347,6 @@ int tcp_gateway( void ){
                       if(result==WICED_TCPIP_SUCCESS){
                           send_data_task=WICED_TRUE;
                       }
-                      fail_socket =0;
                       s_count_x=0;
                       data_send_bt=0;
                   }

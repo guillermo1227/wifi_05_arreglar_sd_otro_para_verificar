@@ -185,14 +185,14 @@ void main_uart(wiced_thread_arg_t arg){
                     sprintf(uart3,"%s\n",rx_buffer3);
 //                    wiced_uart_transmit_bytes( WICED_UART_1, uart3, strlen(uart3));
 
-                    lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
+                    lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);  /* Pendinte */
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);      //Aqui si llega BNM y BEAC ---> _B_transit=WICED_TRUE; si fal==1 ---> fallen_f=WICED_TRUE;
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);       /* HE Beacons */
+                    data_file_write(rx_buffer3);       /* HE Beacons aqui voy*/
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
-                    data_bt_send(rx_buffer3);                   /* Acomodo datos para karim */
+                    data_bt_send(rx_buffer3);                   /* Acomodo datos para karim, aqui esta fcail */
 
                     //tamagochi(rx_buffer3,&log_accarreos);
 //                    limit_log=id_revived(rx_buffer3);
@@ -249,9 +249,10 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
     char delim[2] = ",";
     int x=0;
 
-    if((strstr(buffer_in,"BNM|"))&&((strstr(buffer_in,"GEOSF")))&&((strstr(buffer_in,"LAMP"))==NULL)&&((strstr(buffer_in,"VEHI"))==NULL)){
+    if((strstr(buffer_in,"BNM:"))&&((strstr(buffer_in,"GEOSF")))&&((strstr(buffer_in,"LAMP"))==NULL)&&((strstr(buffer_in,"VEHI"))==NULL)){
         _B_transit=WICED_TRUE;
-        unsigned char *cvl_1 = strtok(str_split, "|");
+        //unsigned char *cvl_1 = strtok(str_split, "|");
+        unsigned char *cvl_1 = strtok(str_split, ":");
         cvl_1=strtok(NULL, "|");
         reg_incoming=WICED_TRUE;
                 //            count_save=1;
