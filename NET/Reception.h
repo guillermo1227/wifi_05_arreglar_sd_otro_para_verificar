@@ -365,8 +365,6 @@ int tcp_gateway( void ){
                   }
 
               }
-
-
               /* <----------------------> */
 
               memset(data_out,NULL,1000);
@@ -852,8 +850,6 @@ int tcp_client_geo( )
                  _machine_flag = WICED_FALSE;       /* Variable to indicate the fill of the carry whit internet */
                  wiced_rtos_unlock_mutex(&GeolocalizationMutex);
 
-                        /* Variable to indicate the fill of the carry whit internet */
-                 //wiced_rtos_set_semaphore(&StateMachineSemaphore);
              }
 
 
