@@ -103,17 +103,6 @@ void init_all_timer(){
 
 static wiced_result_t Acarreo_V( void ){
 
-//    for(int b=1;b<buff_aux;b++){
-//
-//               if(strlen(aux_log_collision[b].mac_bt)!=0){
-//                   printf("CCC %s,\n",aux_log_collision[b].mac_bt);
-//                   }
-//       }
-
-//         printf("\t%d\t%s\t%s\n",log_accarreos.type,log_accarreos.time_start,log_accarreos.mac_bt);
-
-//
-//            memset(id_count,'1',2);
     if(strlen(log_accarreos.mac_bt)!=0){
         wiced_filesystem_unmount(&fs_handle);
         init_sd(&fs_handle);

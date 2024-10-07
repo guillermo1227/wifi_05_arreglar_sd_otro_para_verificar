@@ -47,7 +47,7 @@ uint8_t coun;
 #define TCP_CLIENT_RECEIVE_TIMEOUT_LAMP        3000
 
 #define TCP_CONNECTION_NUMBER_OF_RETRIES  6
-#define TCP_DOWN_NUMBER                   22  //60
+#define TCP_DOWN_NUMBER                   70
 #define TCP_CLIENT_STACK_SIZE   (10000)
 
 #define SIID_C "-SSF-HARDWARE"

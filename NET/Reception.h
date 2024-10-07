@@ -199,7 +199,7 @@ int tcp_gateway( void ){
 //                     set_name();
                  tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+               //wiced_framework_reboot();
             }
 
         }
@@ -220,7 +220,7 @@ int tcp_gateway( void ){
                  wiced_rtos_delay_milliseconds(100);
                  tcp_down_connect=WICED_TRUE;
 
-               wiced_framework_reboot();
+               //wiced_framework_reboot();
             }
 
             WPRINT_APP_INFO(("falied 2\n"));
@@ -413,19 +413,6 @@ int tcp_client_aca( )
   //                     set_name();
 //                 wiced_framework_reboot();
               }
-
-  //            WPRINT_APP_INFO(("falied 1\n"));
-  //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-  //                flag_time_set=WICED_FALSE;
-  //                flag_time_set_PUBLISH=WICED_FALSE;
-  //                            date_set(aux_date_y,&i2c_rtc);
-  //                wiced_rtos_delay_microseconds(100);
-  //                            time_set(aux_time,&i2c_rtc);
-  //                printf("%s,%s\n",aux_date_y,aux_time);
-  //                wiced_rtos_delay_microseconds(2000);
-  //
-  //            }
-
           }
           else{
   //            try_n=0;
@@ -442,18 +429,6 @@ int tcp_client_aca( )
                   check_sound_onoff();
 
                    wiced_rtos_delay_milliseconds(100);
-  //                     set_name();
-  //                 if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-  //                     flag_time_set=WICED_FALSE;
-  //                     flag_time_set_PUBLISH=WICED_FALSE;
-  //                                 date_set(aux_date_y,&i2c_rtc);
-  //                     wiced_rtos_delay_microseconds(100);
-  //                                 time_set(aux_time,&i2c_rtc);
-  //                     printf("%s,%s\n",aux_date_y,aux_time);
-  //                     wiced_rtos_delay_microseconds(2000);
-  //
-  //                 }
-//                 wiced_framework_reboot();
               }
 
               WPRINT_APP_INFO(("falied 2\n"));
@@ -474,19 +449,6 @@ int tcp_client_aca( )
   ////                   set_name();
                   check_sound_onoff();
                        wiced_rtos_delay_milliseconds(100);
-  //                     set_name();
-  //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-  //                flag_time_set=WICED_FALSE;
-  //                flag_time_set_PUBLISH=WICED_FALSE;
-  //                            date_set(aux_date_y,&i2c_rtc);
-  //                wiced_rtos_delay_microseconds(100);
-  //                            time_set(aux_time,&i2c_rtc);
-  //                printf("%s,%s\n",aux_date_y,aux_time);
-  //                wiced_rtos_delay_microseconds(2000);
-  //
-  //            }
-
-//                 wiced_framework_reboot();
               }
 
               WPRINT_APP_INFO(("falied 3\n"));
@@ -678,19 +640,6 @@ int tcp_client_geo( )
      //                     set_name();
 //                    wiced_framework_reboot();
                  }
-
-     //            WPRINT_APP_INFO(("falied 1\n"));
-     //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-     //                flag_time_set=WICED_FALSE;
-     //                flag_time_set_PUBLISH=WICED_FALSE;
-     //                            date_set(aux_date_y,&i2c_rtc);
-     //                wiced_rtos_delay_microseconds(100);
-     //                            time_set(aux_time,&i2c_rtc);
-     //                printf("%s,%s\n",aux_date_y,aux_time);
-     //                wiced_rtos_delay_microseconds(2000);
-     //
-     //            }
-
              }
              else{
      //            try_n=0;
@@ -707,18 +656,6 @@ int tcp_client_geo( )
                      check_sound_onoff();
 
                       wiced_rtos_delay_milliseconds(100);
-     //                     set_name();
-     //                 if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-     //                     flag_time_set=WICED_FALSE;
-     //                     flag_time_set_PUBLISH=WICED_FALSE;
-     //                                 date_set(aux_date_y,&i2c_rtc);
-     //                     wiced_rtos_delay_microseconds(100);
-     //                                 time_set(aux_time,&i2c_rtc);
-     //                     printf("%s,%s\n",aux_date_y,aux_time);
-     //                     wiced_rtos_delay_microseconds(2000);
-     //
-     //                 }
-//                    wiced_framework_reboot();
                  }
 
                  WPRINT_APP_INFO(("falied 2\n"));
@@ -739,19 +676,6 @@ int tcp_client_geo( )
      ////                   set_name();
                      check_sound_onoff();
                           wiced_rtos_delay_milliseconds(100);
-     //                     set_name();
-     //            if((strlen(aux_date_y)==8)&&(strlen(aux_time)==8)&&(flag_time_set_PUBLISH==WICED_TRUE)){ // Realizar la condicion correcto o quitarla la condicional
-     //                flag_time_set=WICED_FALSE;
-     //                flag_time_set_PUBLISH=WICED_FALSE;
-     //                            date_set(aux_date_y,&i2c_rtc);
-     //                wiced_rtos_delay_microseconds(100);
-     //                            time_set(aux_time,&i2c_rtc);
-     //                printf("%s,%s\n",aux_date_y,aux_time);
-     //                wiced_rtos_delay_microseconds(2000);
-     //
-     //            }
-
-//                    wiced_framework_reboot();
                  }
 
                  WPRINT_APP_INFO(("falied 3\n"));

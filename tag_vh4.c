@@ -121,10 +121,10 @@ void application_start( ){
 
 //    wwd_wifi_set_mcs_rate (WICED_STA_INTERFACE, 0, WICED_TRUE);
 
+    Init_gpio();
     init_rtc(&i2c_rtc);
     init_sd(&fs_handle);
     uart_int();
-    Init_gpio();
     init_all_timer();
 
 
@@ -210,13 +210,13 @@ void application_start( ){
 //    Set_GATEWAY("-G10.117.103.254",16,WICED_UART_3);
 
 
-        Set_SSID("-STracking-SD",13,WICED_UART_3);
-        Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
-        Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
+        //Set_SSID("-STracking-SD",13,WICED_UART_3);
+        //Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
+        //Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
 //        Set_MASK("-M255.255.252.0",15,WICED_UART_3);
 //        Set_IP("-C10.178.55.50",16,WICED_UART_3);
 //        Set_GATEWAY("-G10.178.55.254",16,WICED_UART_3);
-        Set_config();
+        //Set_config();
 
 
 //            silent=WICED_TRUE;
@@ -234,35 +234,19 @@ void application_start( ){
     switch (is_config()) {
               case 0:
                   set_name();
-                  set_name();
-                  net_config();
-   //               Set_SSID("-SSF-DEMO",13,WICED_UART_3);
-   //               Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
-   //               Set_SERVER("-I10.174.109.33",17,WICED_UART_3);
-   //               Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-   //               Set_IP("-C10.174.109.60",16,WICED_UART_3);
-   //               Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-   //               net_config();
-   //               Set_SSID("-SSF-DEMO",13,WICED_UART_3);
-   //               Set_KEY("-KD3_lasec2020.,",17,WICED_UART_3);
-   //               Set_SERVER("-I10.174.107.50",17,WICED_UART_3);
-   //               Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-   //               Set_IP("-C10.174.109.51",16,WICED_UART_3);
-   //               Set_GATEWAY("-G10.174.107.30",16,WICED_UART_3);
-   //               Set_config();
-//                  Set_SSID("-SSF-TRACKING",20,WICED_UART_3);
-//                   Set_KEY("-KP4LM4R3J0.@",20,WICED_UART_3);
-//                   Set_SERVER("-I172.16.240.2",17,WICED_UART_3);
-//                   Set_MASK("-M255.255.248.0",15,WICED_UART_3);
-//                   Set_GATEWAY("-G172.16.240.1",16,WICED_UART_3);
-//
-//                   Set_IP("-C172.16.245.35",16,WICED_UART_3);
 
-//                       Set_config();
+//                  Set_SSID("-STracking-SD",13,WICED_UART_3);
+//                  Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
+//                  Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
+
+                  Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
+                  Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
+                  Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+                  Set_config();
+
+                  net_config();
                   break;
               case 3:
-                  set_name();
-                  //set_name();
                   init_tcp_w();
                    net_vehicle();
                   break;
