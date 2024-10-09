@@ -196,7 +196,8 @@ void net_vehicle(){
 
           wiced_network_set_hostname(V_h);    /* Host name */
 
-          result_ip = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+          //result_ip = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+          result_ip = wiced_ip_up( interface, WICED_USE_STATIC_IP, &device_init_ip_settings2 );
           if((result_ip==WICED_SUCCESS)){
               //printf("\n ** Asignacion de IP correcta ** \n");
               ip_is_up=true;
