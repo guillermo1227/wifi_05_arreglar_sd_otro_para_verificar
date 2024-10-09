@@ -288,7 +288,7 @@ int tcp_gateway( void ){
 //////
 //////
 //        s_count_x=100;
-
+        //wiced_uart_transmit_bytes( WICED_UART_1,"Antes\n", strlen("Antes\n"));
               if((s_count_x<=limit_data)){
                   WPRINT_APP_INFO(("Multiple Tcp client\n"));
                   if(s_count_x==limit_data){
@@ -318,10 +318,8 @@ int tcp_gateway( void ){
                           }
                           else{
                           wiced_rtos_delay_microseconds( 10 );
-//                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
-//                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
                           sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
-
+                          //wiced_uart_transmit_bytes( WICED_UART_1,data_out, strlen(data_out));
                                           memcpy(data_btt[f].mac_bt,NULL,17);
                                           memcpy(data_btt[f].type,NULL,17);
                                           memcpy(data_btt[f].rssi,NULL,4);

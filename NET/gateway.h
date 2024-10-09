@@ -471,24 +471,24 @@ void data_bt_send(unsigned char* buffer_in ){
 
                unsigned char *cvl1 = strtok(str_split, delim);
                while(cvl1 != NULL){
-   //                WPRINT_APP_INFO( ("strtok -> %s \r\n",cvl1) );
-   //                strcpy(pem_mac,cvl1);
-   //                WPRINT_APP_INFO( ("memecpy -> %s \r\n",pem_mac) );
                    switch (x) {
                        case 0:
                            memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
                        break;
                        case 1:
-                           if(strstr(buffer_in,"LAMP")||(strstr(buffer_in,"VEHC"))){
+                           if(strstr(buffer_in,"LAMP")||(strstr(buffer_in,"VEHI"))){
                                strcpy(data_btt[s_count_x+1].type,"LAMP");
+                               strcpy(data_btt[s_count_x+1].type,"LAMP");
+                               printf("Vehiculo\n");
+                               //wiced_uart_transmit_bytes( WICED_UART_1,"Vehiculo\n", strlen("Vehiculo\n"));
                            }
                            else if(strstr(buffer_in,"BEAC")){
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
                                GEOSF_F=WICED_TRUE;
-
                            }
                            else{
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
+                               //wiced_uart_transmit_bytes( WICED_UART_1,"Geosf2", strlen("Geosf2"));
                            }
                            break;
                        case 2:
@@ -507,37 +507,8 @@ void data_bt_send(unsigned char* buffer_in ){
                s_count_x++;
                data_send_bt=s_count_x;
            }
-
-
-
-
-//        unsigned char *cvl1 = strtok(str_split, delim);
-//        while(cvl1 != NULL){
-//            switch (x) {
-//                case 0:
-//                break;
-//                case 1:
-//                    strcpy(str_temp,cvl1);
-//                    if((strcmp(str_temp,"BEAC")==0)){
-////                        WPRINT_APP_INFO( ("name:=> %s\r\n",str_temp) );
-//                        _B_transit=WICED_TRUE;
-//                    }
-//                    break;
-//                case 2:
-//
-//                    break;
-//                default:
-//                    break;
-//            }
-//            x++;
-//            cvl1=strtok(NULL, delim);
-//        }
-
-
     }
-
     wiced_rtos_set_semaphore(&displaySemaphore);
-
 }
 
 

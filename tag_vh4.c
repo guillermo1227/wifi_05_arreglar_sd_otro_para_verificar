@@ -235,14 +235,14 @@ void application_start( ){
               case 0:
                   set_name();
 
-//                  Set_SSID("-STracking-SD",13,WICED_UART_3);
-//                  Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
-//                  Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
-
-                  Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
-                  Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
-                  Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+                  Set_SSID("-STracking-SD",13,WICED_UART_3);
+                  Set_KEY("-KX%baCU$rC5YC",17,WICED_UART_3);
+                  Set_SERVER("-I10.178.72.76",17,WICED_UART_3);
                   Set_config();
+//                  Set_SSID("-SCSM-MONITOREO",20,WICED_UART_3);
+//                  Set_KEY("-KM0n1t0r30#21",20,WICED_UART_3);
+//                  Set_SERVER("-I10.90.120.10",17,WICED_UART_3);
+//                  Set_config();
 
                   net_config();
                   break;
