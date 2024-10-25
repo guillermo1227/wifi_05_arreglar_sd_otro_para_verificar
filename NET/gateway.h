@@ -448,21 +448,24 @@ void publishThread(wiced_thread_arg_t arg)
 
     }
 }
-void data_bt_send(unsigned char* buffer_in ){
-
+void data_bt_send(unsigned char* buffer_in ){   /* BNM|BC:57:29:00:2F:15,GEOSF,-65,0 */
 
     unsigned char str_switch[4];
        unsigned char str_split[128];
        unsigned char pem_mac[17];
        unsigned char str_temp[17];
+       unsigned char str_No_Geosf[5];
 
 
        strncpy(str_switch,buffer_in,4);
        strcpy(str_split,&buffer_in[4]);
 
+       //strcpy(str_No_Geosf,&buffer_in[22]);
+       strncpy(str_No_Geosf,&buffer_in[22],5);
+
        char delim[] = ",";     //establece como  realizara el split
        int x=0;
-    if(strstr(str_switch,"BNM|")){
+    if(strstr(str_switch,"BNM|") && !strstr(str_No_Geosf,"GEOSF")){
 
            if(s_count_x==limit_data){
                data_send_bt=s_count_x;
@@ -482,14 +485,14 @@ void data_bt_send(unsigned char* buffer_in ){
                                printf("Vehiculo\n");
                                //wiced_uart_transmit_bytes( WICED_UART_1,"Vehiculo\n", strlen("Vehiculo\n"));
                            }
-                           else if(strstr(buffer_in,"BEAC")){
-                               strcpy(data_btt[s_count_x+1].type,"BEAC");
-                               GEOSF_F=WICED_TRUE;
-                           }
-                           else{
-                               strcpy(data_btt[s_count_x+1].type,"BEAC");
-                               //wiced_uart_transmit_bytes( WICED_UART_1,"Geosf2", strlen("Geosf2"));
-                           }
+//                           else if(strstr(buffer_in,"BEAC")){
+//                               strcpy(data_btt[s_count_x+1].type,"BEAC");
+//                               GEOSF_F=WICED_TRUE;
+//                           }
+//                           else{
+//                               strcpy(data_btt[s_count_x+1].type,"BEAC");
+//                               //wiced_uart_transmit_bytes( WICED_UART_1,"Geosf2", strlen("Geosf2"));
+//                           }
                            break;
                        case 2:
                            strcpy(data_btt[s_count_x+1].rssi,cvl1);

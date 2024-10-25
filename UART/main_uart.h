@@ -184,11 +184,11 @@ void main_uart(wiced_thread_arg_t arg){
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);
+                    data_file_write(rx_buffer3); /* HE; */
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
-                    data_bt_send(rx_buffer3);
+                    data_bt_send(rx_buffer3); /* Gateway */
 
                     tamagochi(rx_buffer3,&log_accarreos);
 //                    limit_log=id_revived(rx_buffer3);

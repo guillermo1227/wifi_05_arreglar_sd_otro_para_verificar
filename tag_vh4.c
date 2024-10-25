@@ -228,9 +228,6 @@ void application_start( ){
 //    buzz(150,0);
             main_c=is_config();
 
-
-
-
     switch (is_config()) {
               case 0:
                   set_name();
