@@ -56,11 +56,12 @@ typedef struct data_in
      unsigned char rssi[4];
      unsigned char fallen[2];
 
-
+     unsigned char time_start_BEACON[12];
+     unsigned char date_BEACON[12];
 }dataa;
 
 struct data_in data_btt [100+10];
-
+struct data_in data_B;
 
 typedef struct
 {
@@ -184,11 +185,11 @@ void main_uart(wiced_thread_arg_t arg){
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);
+                    data_file_write(rx_buffer3);        /* Geolocalizacion */
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
-                    data_bt_send(rx_buffer3);
+                    data_bt_send(rx_buffer3);       /* Gateway */
 
                     tamagochi(rx_buffer3,&log_accarreos);
 //                    limit_log=id_revived(rx_buffer3);

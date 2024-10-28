@@ -27,7 +27,7 @@
 #include "GPIO/manager_gpio_vh.h"
 
 int status_config=0;
-uint8_t coun;
+uint8_t coun, bad_value=0;
 
 
 /******************************************************
@@ -85,6 +85,8 @@ uint8_t try_n=1;
 char data_out[1000];
 char bt_msm[50];
 int data_send_bt;
+
+wiced_bool_t Data_B_in=WICED_FALSE;
 
 const char s[2] = "\n";
 char *token;
@@ -449,7 +451,7 @@ void publishThread(wiced_thread_arg_t arg)
     }
 }
 void data_bt_send(unsigned char* buffer_in ){
-
+    Data_B_in = WICED_FALSE;
 
     unsigned char str_switch[4];
        unsigned char str_split[128];
@@ -470,24 +472,32 @@ void data_bt_send(unsigned char* buffer_in ){
            else if(s_count_x<limit_data){
 
                unsigned char *cvl1 = strtok(str_split, delim);
-               while(cvl1 != NULL){
+               while(cvl1 != NULL)
+               {
                    switch (x) {
                        case 0:
-                           memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
-                       break;
+                           //memcpy(data_btt[s_count_x+1].mac_bt,cvl1,17);
+                           if(strstr(cvl1,"|"))
+                           {
+                               bad_value = 1;
+                           }
+                           else
+                           {
+                               memcpy(data_B.mac_bt,cvl1,17);   /* Copy the mac, after will compare to verify if is insede of the struct */
+                           }
+                           break;
                        case 1:
                            if(strstr(buffer_in,"LAMP")||(strstr(buffer_in,"VEHI"))){
                                strcpy(data_btt[s_count_x+1].type,"LAMP");
-                               strcpy(data_btt[s_count_x+1].type,"LAMP");
-                               printf("Vehiculo\n");
-                               //wiced_uart_transmit_bytes( WICED_UART_1,"Vehiculo\n", strlen("Vehiculo\n"));
                            }
                            else if(strstr(buffer_in,"BEAC")){
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
                                GEOSF_F=WICED_TRUE;
+                               strcpy(data_btt[s_count_x+1].time_start_BEACON,time_get(&i2c_rtc));
                            }
                            else{
                                strcpy(data_btt[s_count_x+1].type,"BEAC");
+                               strcpy(data_btt[s_count_x+1].time_start_BEACON,time_get(&i2c_rtc));
                                //wiced_uart_transmit_bytes( WICED_UART_1,"Geosf2", strlen("Geosf2"));
                            }
                            break;
@@ -504,8 +514,41 @@ void data_bt_send(unsigned char* buffer_in ){
                    cvl1=strtok(NULL, delim);
                }
                x=0;
-               s_count_x++;
-               data_send_bt=s_count_x;
+
+               if(bad_value != 1)   /* if the value is = 0 */
+               {
+                   int in_v=0;
+                   for(int i=0; i<s_count_x;i++)
+                   {
+                       if(strstr(data_btt[i+1].mac_bt,data_B.mac_bt) ||
+                               strstr(data_btt[i+1].mac_bt,data_B.mac_bt))
+                       {
+                           Data_B_in = WICED_TRUE;
+                           in_v = i+1;     /* Keep the position that was detect */
+                           break;
+                       }
+                   }
+
+                   if(Data_B_in == WICED_FALSE)    /* Save vehicule mac */
+                   {
+                       memcpy(data_btt[s_count_x+1].mac_bt,data_B.mac_bt,17);
+                       s_count_x++;
+                       data_send_bt=s_count_x;
+                   }
+                   else
+                   {
+                       //sprintf(data_btt[in_v].rssi,"R%s",data_btt[s_count_x+1].rssi);
+                       memcpy(data_btt[in_v].rssi,data_btt[s_count_x+1].rssi,4); /* Only update the RSSI value */
+
+                   }
+                   /* ****************** */
+               }
+
+               memset(data_B.mac_bt,NULL,17);
+               memset(data_B.type,NULL,17);
+               memset(data_B.rssi,NULL,4);
+               memset(data_B.fallen,NULL,2);
+               bad_value = 0;
            }
     }
     wiced_rtos_set_semaphore(&displaySemaphore);
