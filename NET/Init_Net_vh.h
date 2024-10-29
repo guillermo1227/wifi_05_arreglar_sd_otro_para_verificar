@@ -196,8 +196,8 @@ void net_vehicle(){
 
           wiced_network_set_hostname(V_h);    /* Host name */
 
-          //result_ip = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
-          result_ip = wiced_ip_up( interface, WICED_USE_STATIC_IP, &device_init_ip_settings2 );
+          result_ip = wiced_ip_up( interface, WICED_USE_EXTERNAL_DHCP_SERVER, &device_init_ip_settings2 );
+          //result_ip = wiced_ip_up( interface, WICED_USE_STATIC_IP, &device_init_ip_settings2 );
           if((result_ip==WICED_SUCCESS)){
               //printf("\n ** Asignacion de IP correcta ** \n");
               ip_is_up=true;
@@ -306,8 +306,8 @@ void net_config(){
     /* Bring up the network interface */
     wiced_result_t result;
 
-    Set_SSID(SIID_C,sizeof(SIID_C),WICED_UART_1);
-    Set_KEY(PASS_C,sizeof(PASS_C),WICED_UART_1);
+    //Set_SSID(SIID_C,sizeof(SIID_C),WICED_UART_1);
+    //Set_KEY(PASS_C,sizeof(PASS_C),WICED_UART_1);
 
     WPRINT_APP_INFO( ("Net config\r\n") );
     //      result = wiced_network_up(WICED_CONFIG_INTERFACE, WICED_USE_EXTERNAL_DHCP_SERVER,&device_init_settings);
