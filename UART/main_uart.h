@@ -56,7 +56,7 @@ typedef struct data_in
      unsigned char rssi[4];
      unsigned char fallen[2];
 
-     unsigned char time_start_BEACON[12];
+     unsigned char time_start_BEACON[17];
      unsigned char date_BEACON[12];
 }dataa;
 

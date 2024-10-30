@@ -557,10 +557,10 @@ void data_bt_send(unsigned char* buffer_in ){
                           /* ****************** */
                       }
 
-                      memset(data_B.mac_bt,NULL,17);
-                      memset(data_B.type,NULL,17);
-                      memset(data_B.rssi,NULL,4);
-                      memset(data_B.fallen,NULL,2);
+                      memcpy(data_B.mac_bt,NULL,17);
+                      memcpy(data_B.type,NULL,17);
+                      memcpy(data_B.rssi,NULL,4);
+                      memcpy(data_B.fallen,NULL,2);
                       bad_value = 0;
                   }
                }
@@ -568,6 +568,18 @@ void data_bt_send(unsigned char* buffer_in ){
            else
            {
                printf("WARNING ERROR 2********\n");
+               if(s_count_x != 0)
+               {
+                   for(uint8_t i=0; i<s_count_x;i++)
+                   {
+                       memcpy(data_btt[i].mac_bt,NULL,17);
+                       memcpy(data_btt[i].type,NULL,17);
+                       memcpy(data_btt[i].rssi,NULL,4);
+                       memcpy(data_btt[i].fallen,NULL,2);
+                       memcpy(data_btt[i].time_start_BEACON,NULL,17);
+                   }
+                   s_count_x=0;
+               }
            }
 
 

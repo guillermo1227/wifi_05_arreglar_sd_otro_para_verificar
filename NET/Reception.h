@@ -316,6 +316,7 @@ int tcp_gateway( void ){
                               memcpy(data_btt[f].type,NULL,17);
                               memcpy(data_btt[f].rssi,NULL,4);
                               memcpy(data_btt[f].fallen,NULL,2);
+                              memcpy(data_btt[f].time_start_BEACON,NULL,17);
 
                               result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                               if(result==WICED_TCPIP_SUCCESS){
@@ -553,9 +554,6 @@ int tcp_client_aca( )
 
 // Fin de envio de acarreos
 
-
-
-
 //                key=2;
                 count_tcp++;
 
@@ -599,7 +597,6 @@ int tcp_client_aca( )
 //             wiced_rtos_set_semaphore(&tcpReceptionSemaphore);
 
              return state;
-
 }
 
 int tcp_client_geo( )
